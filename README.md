@@ -1,5 +1,9 @@
 # Lenguaje SQL
 
+## Introducción a SQL
+
+TODO
+
 ---
 
 ## Enlaces de interés

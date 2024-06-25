@@ -186,13 +186,13 @@ SQL se ha convertido en una herramienta esencial para cualquier persona involucr
 
 ## Enlaces de interés
 
-- <https://docs.oracle.com/en/database/oracle/oracle-database/index.html>
+- <https://roadmap.sh/sql>
 - <https://www.sqlzoo.net/wiki/SQL_Tutorial>
 - <https://www.w3schools.com/sql/default.asp>
-- <https://www.w3schools.com/mysql/default.asp>
-- <https://roadmap.sh/sql>
 - <https://datalemur.com/sql-tutorial>
 - <https://www.sqltutorial.org/>
+- <https://github.com/XD-DENG/SQL-exercise>
+- <https://sqlbolt.com/>
 
 ## Licencia
 

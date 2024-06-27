@@ -2,17 +2,12 @@
 
 ... EN DESARROLLO ...
 
-<!-- markdownlint-disable MD033 -->
-<p align="center">
-  <a href="https://alxgcrz.com" target="_blank">
-    <img src="https://alxgcrz.com/assets/asset_06_v1.png" alt="En desarrollo" title="En desarrollo" width="40%">
-  </a>
-</p>
-<!-- markdownlint-enable MD033 -->
-
 ## Introducción
 
-**SQL**, que significa **_"Structured Query Language"_** (Lenguaje de Consulta Estructurado), es un lenguaje de programación utilizado para gestionar y manipular bases de datos relacionales. Fue desarrollado en la década de 1970 y se ha convertido en el estándar de facto para interactuar con sistemas de gestión de bases de datos relacionales (RDBMS).
+**SQL**, que significa **_"Structured Query Language"_** (Lenguaje de Consulta Estructurado), es un lenguaje de programación utilizado para gestionar y manipular bases de datos relacionales. Fue desarrollado en la década de 1970 en IBM basándose en el trabajo de Edgard Codd y se ha convertido en el estándar de facto para interactuar con sistemas de gestión de bases de datos relacionales (SGBDR).
+
+La primera versión de SQL normalizada por ANSI data de 1986. La norma SQL2 o SQL92 es la más importante y la mayoría de los SGBDR existentes implementan esta
+versión.
 
 Características clave de SQL:
 
@@ -34,7 +29,37 @@ SQL se ha convertido en una herramienta esencial para cualquier persona involucr
 
 > Sección generada por ChatGPT
 
+El lenguaje SQL se divide en varios subconjuntos:
+
+- **DDL** (_Data Definition Language_), que agrupa todos los comandos utilizados para crear, modificar o eliminar las estructuras de la base de datos (tablas, índices, vistas, etc.). Se trata principalmente de los comandos CREATE, ALTER y DROP.
+
+- **DML** (_Data Manipulation Language_), que agrupa los comandos utilizados para manipular los datos contenidos en la base de datos. Se trata principalmente de los comandos SELECT, INSERT, DELETE y UPDATE.
+
+- **DCL** (_Data Control Language_), que agrupa los comandos utilizados para administrar la seguridad de acceso a los datos. Se trata principalmente de los comandos GRANT y REVOKE.
+
+- **TCL** (_Transaction Control Language_), que agrupa los comandos utilizados para administrar la confirmación o no de actualizaciones realizadas sobre la base de datos. Se trata principalmente de los comandos COMMIT y ROLLBACK
+
 ## Introducción a las Bases de Datos Relacionales
+
+El modelo relacional fue creado por un investigador, Edgard Codd, que trabajaba en IBM a principios de los años 70.
+
+El modelo relacional se basa en el concepto de conjunto. Esquemáticamente el modelo relacional se puede representar a través de una tabla; igualmente se puede llamar una tabla, una relación.
+
+Este conjunto tiene atributos (las columnas) y líneas que contienen los valores (los registros).
+
+El modelo relacional presenta los datos de forma lógica, es totalmente independiente del modelo físico. Es el proveedor el que decide el modo de almacenamiento físico de las tablas. Esta es la mayor ventaja de las bases de datos relacionales, la independencia entre lo lógico y lo físico.
+
+Una vez se han definido las tablas, hay que disponer de un lenguaje para manipularlas, se trata del álgebra relacional.
+
+SQL implementa el álgebra relacional y los sistemas de gestión de bases de datos relacionales (SGBDR) implementan el modelo relacional.
+
+Los tres principales conceptos del modelo relacional son el **dominio**, el **producto cartesiano** y las **relaciones**.
+
+### Dominio
+
+El dominio es un conjunto de valores representado por un nombre.
+
+El número de ocurrencias de cada uno de los dominios da la **cardinalidad**.
 
 ### Definición de bases de datos y tablas
 
@@ -187,12 +212,14 @@ SQL se ha convertido en una herramienta esencial para cualquier persona involucr
 ## Enlaces de interés
 
 - <https://roadmap.sh/sql>
-- <https://www.sqlzoo.net/wiki/SQL_Tutorial>
-- <https://www.w3schools.com/sql/default.asp>
-- <https://datalemur.com/sql-tutorial>
 - <https://www.sqltutorial.org/>
+- <https://www.sqlitetutorial.net/>
+- <https://datalemur.com/sql-tutorial>
 - <https://github.com/XD-DENG/SQL-exercise>
+- <https://www.w3schools.com/sql/default.asp>
+- <https://www.sqlzoo.net/wiki/SQL_Tutorial>
 - <https://sqlbolt.com/>
+- <https://bookdown.org/paranedagarcia/database/sql.html>
 
 ## Licencia
 

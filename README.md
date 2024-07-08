@@ -209,7 +209,7 @@ El número de ocurrencias de cada uno de los dominios da la **cardinalidad**.
 
 ---
 
-## Enlaces de interés
+## Referencias
 
 - <https://roadmap.sh/sql>
 - <https://www.sqltutorial.org/>

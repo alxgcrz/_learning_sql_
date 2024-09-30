@@ -144,17 +144,19 @@ El **álgebra relacional** es un conjunto de operaciones que permite extraer y m
 
 Los operadores fundamentales basados en la teoría de conjuntos:
 
-- **Selección (σ)**: Este operador se usa para filtrar filas de una tabla que cumplen una condición específica. El resultado es un subconjunto de la tabla original.
+- [**Selección (σ)**](#selección-σ): este operador se usa para filtrar filas de una tabla que cumplen una condición específica. El resultado es un subconjunto de la tabla original.
 
-- **Proyección (π)**: este operador selecciona columnas específicas de una tabla, eliminando las columnas que no son necesarias en la nueva tabla de resultados.
+- [**Proyección (π)**](#proyección-π): este operador selecciona columnas específicas de una tabla, eliminando las columnas que no son necesarias en la nueva tabla de resultados.
 
-- **Unión (∪)**: combina las filas de dos tablas que tienen la misma estructura (mismo número de columnas y dominios compatibles). La tabla de resultado contiene todas las filas de ambas tablas, eliminando duplicados.
+- [**Unión (∪)**](#unión-): combina las filas de dos tablas que tienen la misma estructura (mismo número de columnas y dominios compatibles). La tabla de resultado contiene todas las filas de ambas tablas, eliminando duplicados.
 
-- **Intersección (∩)**: devuelve las filas que son comunes a dos tablas que tienen la misma estructura.
+- [**Intersección (∩)**](#intersección-): devuelve las filas que son comunes a dos tablas que tienen la misma estructura.
 
-- **Diferencia (−)**: Devuelve las filas que están en la primera tabla, pero no en la segunda, para tablas con la misma estructura.
+- [**Diferencia (−)**](#diferencia-): devuelve las filas que están en la primera tabla, pero no en la segunda, para tablas con la misma estructura.
 
-- **Combinación (⨝)**: combina las filas de dos tablas basándose en una condición que involucra una o más columnas de cada tabla. Existen diferentes tipos de _join_:
+- [**Producto cartesiano (×)**](#producto-cartesiano-): combina todas las filas de dos tablas, generando todas las posibles combinaciones de sus tuplas.
+
+- [**Combinación (⨝)**](#combinaciones): combina las filas de dos tablas basándose en una condición que involucra una o más columnas de cada tabla. Existen diferentes tipos de _join_:
 
   - **Theta Join (θ)**: combina tablas usando una condición cualquiera.
   
@@ -162,13 +164,17 @@ Los operadores fundamentales basados en la teoría de conjuntos:
 
   - **Natural Join**: Similar al _equijoin_, pero elimina las columnas repetidas en las tablas relacionadas.
 
-## Selección (σ)
+### Selección (σ)
 
-La **selección (σ)** es una operación del álgebra relacional que  permite **extraer filas (tuplas) de una relación (tabla)** que cumplen con una **condición específica**. La tabla resultante tendrá la misma estructura (número de columnas y dominios) que la relación original, pero solo contendrá las filas que satisfacen el criterio de selección.
+La **selección o restricción (σ)** es una operación del álgebra relacional que  permite **extraer filas (tuplas) de una relación (tabla)** que cumplen con una **condición específica**. La tabla resultante tendrá la misma estructura (número de columnas y dominios) que la relación original, pero solo contendrá las filas que satisfacen el criterio de selección.
 
 La notación es **`Rx = σ(condición)(R)`**, donde **`R`** es la relación de la cual se realiza la selección y **`Rx`** es la nueva relación resultante.
 
-Por ejemplo, si tenemos una tabla `CLIENTES` y deseamos seleccionar todos los clientes que pertenecen a la región "Centro":
+Las condiciones se pueden concatenar utilizando los operadores lógicos `AND` y `OR`, además de utilizar operadores de comparación como `=, >, <, >=, <=,` entre otros.
+
+> El término **_"selección"_** del álgebra relacional tiene un **significado diferente** del que se utiliza en SQL, que resulta de un hecho histórico desafortunado. En álgebra relacional, el término **_"selección"_** corresponde a lo que en SQL se corresponde con la cláusula **_where_**.
+
+Como ejemplo de una selección, si tenemos una tabla `CLIENTES` y deseamos seleccionar todos los clientes que pertenecen a la región "Centro":
 
 - **Tabla `CLIENTES`**
 
@@ -191,7 +197,15 @@ Esta operación se expresa como `CLIENTES_CENTRO = σ(región = "Centro")(CLIENT
 | 3   | Luis Rodríguez| Centro  |
 | 6   | Laura Sánchez | Centro  |
 
-> El término _"selección"_ del álgebra relacional tiene un **significado diferente** del que se utiliza en SQL, que resulta de un hecho histórico desafortunado. En álgebra relacional, el término _"selección"_ corresponde a lo que en SQL se denomina **_where_**.
+Otras condiciones podrían ser:
+
+- `σ(región = 'Centro' AND nombre = 'Juan Pérez')(CLIENTES)`
+
+- `σ(región = 'Centro' OR región = 'Oeste')(CLIENTES)`
+
+- `σ(id > 2)(CLIENTES)`
+
+- `σ(id <= 3)(CLIENTES)`
 
 ### Proyección (π)
 
@@ -295,7 +309,11 @@ La notación es **`Rx = R1 ∩ R2`**, donde **`Rx`** es la nueva relación resul
 
 La operación de intersección es útil en la manipulación de bases de datos para encontrar elementos que comparten características específicas en dos conjuntos diferentes. Por ejemplo, puede ser utilizada para identificar clientes que han realizado compras en dos diferentes periodos o categorías.
 
-Por ejemplo, dadas las tablas `CLIENTES_OESTE` y `CLIENTES_CENTRO` la intersección puede representarse como `CLIENTES = CLIENTES_OESTE ∩ CLIENTES_CENTRO` y contendrá todas las filas de ambas tablas, eliminando los duplicados y proporcionando un conjunto de clientes que pertenecen a las dos regiones.
+Es importante notar que, aunque la intersección es una operación válida y útil en álgebra relacional, algunos textos mencionan que su función se puede expresar **usando el operador diferencia (-)**. Es decir, si queremos encontrar los elementos comunes entre dos relaciones, podemos calcularlo utilizando la diferencia de cada relación con la unión de ambas, lo que puede hacer que la intersección sea conceptualmente redundante en algunos contextos.
+
+La fórmula para expresar esto sería: **`R1 ∩ R2 = R1 - (R1 - R2)`**
+
+Como ejemplo de una intersección (∩), dadas las tablas `CLIENTES_OESTE` y `CLIENTES_CENTRO` la intersección puede representarse como `CLIENTES = CLIENTES_OESTE ∩ CLIENTES_CENTRO` y contendrá todas las filas de ambas tablas, eliminando los duplicados y proporcionando un conjunto de clientes que pertenecen a las dos regiones.
 
 - **Tabla `CLIENTES_OESTE`**
 
@@ -319,23 +337,17 @@ Por ejemplo, dadas las tablas `CLIENTES_OESTE` y `CLIENTES_CENTRO` la intersecci
 | --- | ------ | ------ |
 | 3   | Pedro  | Mérida |
 
-Es importante notar que, aunque la intersección es una operación válida y útil en álgebra relacional, algunos textos mencionan que su función se puede expresar usando el operador diferencia. Es decir, si queremos encontrar los elementos comunes entre dos relaciones, podemos calcularlo utilizando la diferencia de cada relación con la unión de ambas, lo que puede hacer que la intersección sea conceptualmente redundante en algunos contextos.
-
-La fórmula para expresar esto sería: **`R1 ∩ R2 = R1 - (R1 - R2)`**
-
 ### Diferencia (−)
 
-La **diferencia (−)** es una operación del álgebra relacional que permite obtener una nueva relación al eliminar de una relación (R1) los elementos que también están presentes en otra relación (R2). Esta operación solo es válida para relaciones que tienen la misma estructura, es decir, deben tener el mismo número de columnas (mismo grado) y los mismos dominios para cada columna.
+La **diferencia (−)** es una operación del álgebra relacional que permite obtener una nueva relación **al eliminar de una relación (R1) los elementos que también están presentes en otra relación (R2)**. Esta operación solo es válida para relaciones que tienen la misma estructura, es decir, deben tener el mismo número de columnas (mismo grado) y los mismos dominios para cada columna.
 
-La notación para la diferencia es **`Rx = R1 − R2`**, donde **`Rx`** es la nueva relación resultante.
+La notación es **`Rx = R1 − R2`**, donde **`Rx`** es la nueva relación resultante.
 
 La operación de diferencia es útil para identificar elementos que son exclusivos de una relación y que no están presentes en otra. Por ejemplo, puede ser utilizada para encontrar clientes que no han realizado compras en un periodo determinado.
 
 Por ejemplo, dada la tabla `CLIENTES`, queremos seleccionar aquellos clientes existentes en el año 2022 pero que ya no son clientes en 2023:
 
 - **Tabla `CLIENTES`**
-
-### Tabla `CLIENTES`
 
 | ID  | Nombre        | Región  | Año |
 |-----|---------------|---------|-----|
@@ -357,31 +369,59 @@ Por ejemplo, dada la tabla `CLIENTES`, queremos seleccionar aquellos clientes ex
 
 En 2022, los clientes con ID 1, 2 y 4 están registrados, mientras que en 2023 no están presentes, lo que los convierte en clientes exclusivos de 2022.
 
-### Restricción
+### Producto cartesiano (×)
 
-TODO
+El **producto cartesiano (×)** es una operación del álgebra relacional que permite **combinar todas las tuplas de una relación (R1) con todas las tuplas de otra relación (R2)**, generando una nueva relación con todas las combinaciones posibles de tuplas de ambas relaciones. El resultado es una relación que tiene el número total de columnas de R1 más las columnas de R2.
 
-### Proyección
+La notación es **`Rx = R1 × R2`**, donde **`Rx`** es la nueva relación resultante de combinar las dos relaciones.
 
-TODO
+El producto cartesiano es útil cuando queremos combinar todas las posibles combinaciones de dos relaciones, pero en la práctica, suele ir acompañado de una operación selección para reducir el conjunto de resultados. Es una de las operaciones fundamentales que puede llevar a un `join` si luego se aplica una condición de filtrado.
 
-### Producto cartesiano
+Por ejemplo, dada la tabla `CLIENTES` y la tabla `PEDIDOS`, podemos generar todas las combinaciones posibles de clientes con sus pedidos:
 
-El **producto cartesiano** P entre varios dominios D1, D2, ..., Dn, se expresa como P = D1 x D2 x ... x Dn. Este producto representa todas las **combinaciones posibles** de los valores en esos dominios.
+- **Tabla `CLIENTES`**
 
-Si tenemos dos dominios D1={1,2} y D2={"A", "B"}, el producto cartesiano de D1 y D2 sería:
+| ID  | Nombre         | Región  |
+|-----|----------------|---------|
+| 1   | Juan Pérez     | Centro  |
+| 2   | Ana Gómez      | Oeste   |
+| 3   | Luis Rodríguez | Este    |
 
-- P = {(1, "A"), (1, "B"), (2, "A"), (2, "B")}
+- **Tabla `PEDIDOS`**
 
-Cada par de valores es una tupla (d1, d2), donde "d1" proviene de D1 y "d2" proviene de D2. Este concepto es clave para entender cómo las bases de datos combinan múltiples tablas (relaciones) mediante operaciones como el **join**.
+| Pedido_ID | Producto   |
+|-----------|------------|
+| 101       | Laptop     |
+| 102       | Smartphone |
 
-Si tenemos tres dominios D1 = {1, 2}, D2 = {"A", "B"} y D3 = {X, Y}, el producto cartesiano sería:
+- **Resultado: `PEDIDOS_CLIENTES = CLIENTES × PEDIDOS`**
 
-- P = {(1, "A", X), (1, "A", Y), (1, "B", X), (1, "B", Y), (2, "A", X), (2, "A", Y), (2, "B", X), (2, "B", Y)}.
+| ID  | Nombre         | Región  | Pedido_ID | Producto   |
+|-----|----------------|---------|-----------|------------|
+| 1   | Juan Pérez     | Centro  | 101       | Laptop     |
+| 1   | Juan Pérez     | Centro  | 102       | Smartphone |
+| 2   | Ana Gómez      | Oeste   | 101       | Laptop     |
+| 2   | Ana Gómez      | Oeste   | 102       | Smartphone |
+| 3   | Luis Rodríguez | Este    | 101       | Laptop     |
+| 3   | Luis Rodríguez | Este    | 102       | Smartphone |
 
 ### Combinaciones
 
-TODO
+La **combinación (JOIN)** es una operación del álgebra relacional que permite **combinar filas de dos relaciones basándose en una condición**. Esta operación une las filas de las dos tablas donde los valores de las columnas especificadas cumplen una condición determinada. Existen varios tipos de combinaciones, siendo las más comunes: **combinación natural**, **combinación interna (inner join)** y **combinación externa (outer join)**.
+
+- **Combinación interna (INNER JOIN)**: Devuelve las filas donde existe una coincidencia en ambas tablas, es decir, solo las filas que cumplen la condición especificada.
+
+- **Combinación externa (OUTER JOIN)**: Devuelve todas las filas de una tabla, y cuando no hay coincidencia en la otra tabla, los valores de esta se rellenan con NULL. Hay tres tipos principales:
+
+  - **LEFT JOIN**: Devuelve todas las filas de la primera tabla y las coincidencias de la segunda, si las hay.
+
+  - **RIGHT JOIN**: Devuelve todas las filas de la segunda tabla y las coincidencias de la primera.
+
+  - **FULL JOIN**: Devuelve todas las filas de ambas tablas, con NULL donde no haya coincidencias.
+
+- **Combinación natural (NATURAL JOIN)**: Une dos tablas automáticamente basándose en las columnas con el mismo nombre y tipo de dato.
+
+La notación para una combinación interna es **`R1 ⨝ condición R2`**.
 
 ## SQL
 

@@ -423,9 +423,51 @@ La **combinación (JOIN)** es una operación del álgebra relacional que permite
 
 La notación para una combinación interna es **`R1 ⨝ condición R2`**.
 
+### Campos calculados elementales
+
+Proyección sobre una relación asociada a un **cálculo** que se realiza sobre cada línea para **crear uno o varios atributos nuevos**.
+
+La notación es `Rx = ⫪ S (A1, ..., N1 = expresión calculada...)`
+
+La expresión calculada puede ser:
+
+- una operación aritmética
+
+- una función matemática
+
+- una función de cadena
+
+Por ejemplo, podemos calcular el total de un pedido multiplicando el precio unitario por la cantidad pedida `TOTAL_PEDIDO = ⫪ PEDIDO (PEDIDONUM, REF, LINEA = PRECIO * CANTIDAD)`
+
+### Campos de valores agregados
+
+Proyección sobre una relación asociada con uno o varios valores agregados que se calculan sobre un atributo para todos los elementos de la relación o de la agrupación vinculada a la proyección, con el fin de **crear uno o varios atributos nuevos**.
+
+La notación es `Rx = ⫪ S (A1, ..., N1 = función estadística(Ax), ...)`
+
+Las funciones estadísticas son:
+
+- **COUNT(\*)**
+
+- **COUNT(atributo)**
+
+- **SUM(atributo)**
+
+- **MAX(atributo)**
+
+- **MIN(atributo)**
+
+Por ejemplo, podemos calcular el número de clientes que hay en una tabla `NUMCLIENTES = ⫪ CLIENTES(N = COUNT(*))`. También podemos calcular el precio más alto, el más bajo y el precio medio por categoría de artículos `STATS = ⫪ ARTICULOS(CATEGORIA, CARO=MAX(PRECIO), BARATO=(PRECIO), MEDIO=(PRECIO))`
+
 ## SQL
 
-TODO
+### Data Types
+
+- [MySQL](https://dev.mysql.com/doc/refman/9.0/en/data-types.html)
+
+- [PostgreSQL](https://www.postgresql.org/docs/current/datatype.html)
+
+- [Oracle Database](https://docs.oracle.com/en/database/oracle/oracle-database/21/sqlrf/Data-Types.html)
 
 ---
 
@@ -529,20 +571,36 @@ docker stop postgres-container
 
 ## Referencias
 
+### MySQL
+
 - <https://dev.mysql.com/doc/>
+- <https://cheatsheets.zip/mysql>
+
+### PostgreSQL
+
 - <https://www.postgresql.org/docs/>
 - <https://wiki.postgresql.org/>
+- <https://cheatsheets.zip/postgres>
+
+### Microsoft SQL
+
+- <https://learn.microsoft.com/es-es/sql>
+
+### Oracle SQL
+
+- <https://docs.oracle.com/en/database/oracle/oracle-database/index.html>
+
+### General
 
 - <https://roadmap.sh/sql>
+- 👍<https://www.w3schools.com/sql/default.asp>
 - <https://www.sqltutorial.org/>
 - <https://www.sqlitetutorial.net/>
 - <https://datalemur.com/sql-tutorial>
 - <https://github.com/XD-DENG/SQL-exercise>
-- <https://www.w3schools.com/sql/default.asp>
 - <https://www.sqlzoo.net/wiki/SQL_Tutorial>
 - <https://sqlbolt.com/>
 - <https://bookdown.org/paranedagarcia/database/sql.html>
-- <https://thedataschools.com/sql/>
 - <https://gestionbasesdatos.readthedocs.io/es/latest/index.html>
 
 ## Licencia

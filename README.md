@@ -207,6 +207,22 @@ Otras condiciones podrían ser:
 
 - `σ(id <= 3)(CLIENTES)`
 
+#### Traducción a SQL
+
+La **selección o restricción (σ)** en álgebra relacional permite extraer únicamente las filas que cumplen una condición específica.
+
+La operación `σ s(condición)` se traduce de la siguiente manera:
+
+```sql
+SELECT * FROM s WHERE condición;
+```
+
+Por ejemplo, la restricción que selecciona los pedidos con el número de pedido igual a 100, representada en álgebra relacional como `PED = σ PEDIDOS(NUMPED = 100)` se traduce a SQL de la siguiente manera:
+
+```sql
+SELECT * FROM PEDIDOS WHERE NUMPED = 100;
+```
+
 ### Proyección (π)
 
 La **proyección (π)** es una operación del álgebra relacional que permite **extraer columnas específicas de una relación**, generando así una nueva relación que contiene únicamente los atributos seleccionados. Este operador es útil cuando se desea obtener una vista reducida de los datos, centrándose solo en los atributos relevantes.
@@ -238,6 +254,26 @@ Por ejemplo, dada la tabla `CLIENTES`, si queremos extraer únicamente los nombr
 | Marta López  | Este    |
 | Carlos Ruiz  | Oeste   |
 | Laura Sánchez | Centro  |
+
+#### Traducción a SQL
+
+La **proyección (π)** en álgebra relacional tiene por objetivo eliminar las columnas no necesarias. En SQL, esto se realiza enumerando únicamente aquellas columnas requeridas en la instrucción `SELECT`.
+
+Por ejemplo, la proyección sobre una tabla de clientes: `π CLIENTES(NUM, NOMBRE, PROVINCIA)` se traduce a SQL de la siguiente manera:
+
+```sql
+SELECT NUM, NOMBRE, PROVINCIA FROM CLIENTES;
+```
+
+Las **proyecciones de agrupación** se pueden efectuar con la ayuda de dos posibles sintaxis:
+
+- `SELECT DISTINCT {* | lista de columnas} FROM tabla;`
+
+- `SELECT lista de columnas FROM tabla GROUP BY lista de columnas;`
+
+La primera sintaxis (`DISTINCT`) permite mostrar solo una fila en caso de que la consulta devuelva varias filas idénticas, mostrando así solo valores únicos.
+
+La segunda sintaxis (`GROUP BY`) se utiliza cuando se desea realizar una proyección de grupo, calculando valores agregados sobre las filas agrupadas. Agrupar primero las filas permite aplicar funciones agregadas, aunque generalmente implica un mayor uso de recursos del servidor.
 
 ### Unión (∪)
 
@@ -301,6 +337,34 @@ Dada la tabla `CLIENTES` queremos seleccionar los clientes de la región "Centro
 | 5   | Carlos Ruiz  | Oeste   |
 | 6   | Laura Sánchez | Centro  |
 
+#### Traducción a SQL
+
+Esta operación permite combinar los resultados de dos o más consultas, obteniendo un conjunto de filas que cumplen con el mismo formato (mismo nombre de columnas, mismo tipo y en el mismo orden).
+
+La operación `S ∪ T` se expresa de la siguiente manera:
+
+```sql
+SELECT lista de columnas FROM S {UNION / UNION ALL} SELECT lista de columnas FROM T;
+```
+
+El operador `UNION` elimina las filas duplicadas del resultado, mientras que `UNION ALL` permite extraer todas las filas procedentes de las consultas, incluyendo las duplicadas.
+
+Supongamos que tenemos dos tablas `CLIENTES_2022` y `CLIENTES_2023`, y queremos obtener la lista de todos los clientes de ambos años:
+
+```sql
+SELECT nombre FROM CLIENTES_2022 
+UNION 
+SELECT nombre FROM CLIENTES_2023;
+```
+
+Si usamos `UNION ALL`, obtendríamos todos los nombres, incluyendo los que están duplicados en ambas tablas:
+
+```sql
+SELECT nombre FROM CLIENTES_2022 
+UNION ALL 
+SELECT nombre FROM CLIENTES_2023;
+```
+
 ### Intersección (∩)
 
 La **intersección (∩)** es una operación del álgebra relacional que permite obtener el conjunto de **elementos que son comunes a dos relaciones**. Esta operación solo es válida para relaciones que tienen la misma estructura, es decir, deben tener el mismo número de columnas (mismo grado) y los mismos dominios para cada columna.
@@ -337,6 +401,22 @@ Como ejemplo de una intersección (∩), dadas las tablas `CLIENTES_OESTE` y `CL
 | --- | ------ | ------ |
 | 3   | Pedro  | Mérida |
 
+#### Traducción a SQL
+
+Esta operación permite obtener filas que están presentes en ambas consultas, siempre que estas tengan el mismo formato (mismo nombre de columnas, mismo tipo y en el mismo orden).
+
+La operación `S ∩ T` se expresa de la siguiente manera:
+
+```sql
+SELECT lista de columnas FROM S INTERSECT SELECT lista de columnas FROM T;
+```
+
+Por ejemplo, si tenemos dos tablas `CLIENTES_2022` y `CLIENTES_2023`, y queremos obtener los clientes que han estado en ambas tablas, podríamos usar:
+
+```sql
+SELECT nombre FROM CLIENTES_2022 INTERSECT SELECT nombre FROM CLIENTES_2023;
+```
+
 ### Diferencia (−)
 
 La **diferencia (−)** es una operación del álgebra relacional que permite obtener una nueva relación **al eliminar de una relación (R1) los elementos que también están presentes en otra relación (R2)**. Esta operación solo es válida para relaciones que tienen la misma estructura, es decir, deben tener el mismo número de columnas (mismo grado) y los mismos dominios para cada columna.
@@ -368,6 +448,22 @@ Por ejemplo, dada la tabla `CLIENTES`, queremos seleccionar aquellos clientes ex
 | 4   | Marta López   | Este    | 2022|
 
 En 2022, los clientes con ID 1, 2 y 4 están registrados, mientras que en 2023 no están presentes, lo que los convierte en clientes exclusivos de 2022.
+
+#### Traducción a SQL
+
+Esta operación permite obtener filas que están en una consulta pero no en otra, siempre que ambas consultas usen el mismo formato (mismo nombre de columnas, mismo tipo y en el mismo orden).
+
+La operación `S − T` se expresa de la siguiente manera:
+
+```sql
+SELECT lista de columnas FROM S MINUS SELECT lista de columnas FROM T;
+```
+
+Por ejemplo, si tenemos dos tablas `CLIENTES_2022` y `CLIENTES_2023`, y queremos obtener los clientes que solo estuvieron en 2022, podríamos usar:
+
+```sql
+SELECT nombre FROM CLIENTES_2022 MINUS SELECT nombre FROM CLIENTES_2023;
+```
 
 ### Producto cartesiano (×)
 
@@ -405,13 +501,37 @@ Por ejemplo, dada la tabla `CLIENTES` y la tabla `PEDIDOS`, podemos generar toda
 | 3   | Luis Rodríguez | Este    | 101       | Laptop     |
 | 3   | Luis Rodríguez | Este    | 102       | Smartphone |
 
+#### Traducción a SQL
+
+El producto cartesiano permite **asociar cada fila de una tabla con cada fila de otras tablas**, generando todas las combinaciones posibles de filas. Esto puede resultar en un número de filas igual al producto del número de filas de las tablas involucradas.
+
+La operación `R × T` se expresa en SQL de la siguiente manera:
+
+```sql
+SELECT lista de columnas FROM S, T;
+```
+
+Si las columnas tienen el mismo nombre en ambas tablas, el nombre de la columna va precedido por el nombre de la tabla. Por lo tanto, el nombre completo de la columna es `nombretabla.nombrecolumna`.
+
+Si tenemos dos tablas, `AULAS` y `PROFESORES`, el producto cartesiano podría verse así:
+
+```sql
+SELECT AULAS.nombre_aula, PROFESORES.nombre_profesor FROM AULAS, PROFESORES;
+```
+
+Esto devolvería una lista que combina cada aula con cada profesor, generando así todas las posibles combinaciones.
+
 ### Combinaciones
 
-La **combinación (JOIN)** es una operación del álgebra relacional que permite **combinar filas de dos relaciones basándose en una condición**. Esta operación une las filas de las dos tablas donde los valores de las columnas especificadas cumplen una condición determinada. Existen varios tipos de combinaciones, siendo las más comunes: **combinación natural**, **combinación interna (inner join)** y **combinación externa (outer join)**.
+La **combinación (JOIN)** es una operación del álgebra relacional que permite **combinar filas de dos relaciones basándose en una condición**. Esta operación une las filas de las dos tablas donde los valores de las columnas especificadas cumplen una condición determinada.
 
-- **Combinación interna (INNER JOIN)**: Devuelve las filas donde existe una coincidencia en ambas tablas, es decir, solo las filas que cumplen la condición especificada.
+Existen varios tipos de combinaciones, siendo las más comunes: **combinación natural**, **combinación interna (inner join)** y **combinación externa (outer join)**.
 
-- **Combinación externa (OUTER JOIN)**: Devuelve todas las filas de una tabla, y cuando no hay coincidencia en la otra tabla, los valores de esta se rellenan con NULL. Hay tres tipos principales:
+- **Combinación interna (`INNER JOIN`)**: Devuelve las filas donde existe una coincidencia en ambas tablas, es decir, solo las filas que cumplen la condición especificada.
+
+La notación para una combinación interna es **`R1 ⨝ condición R2`**.
+
+- **Combinación externa (`OUTER JOIN`)**: Devuelve todas las filas de una tabla, y cuando no hay coincidencia en la otra tabla, los valores de esta se rellenan con NULL. Hay tres tipos principales:
 
   - **LEFT JOIN**: Devuelve todas las filas de la primera tabla y las coincidencias de la segunda, si las hay.
 
@@ -419,15 +539,53 @@ La **combinación (JOIN)** es una operación del álgebra relacional que permite
 
   - **FULL JOIN**: Devuelve todas las filas de ambas tablas, con NULL donde no haya coincidencias.
 
-- **Combinación natural (NATURAL JOIN)**: Une dos tablas automáticamente basándose en las columnas con el mismo nombre y tipo de dato.
+- **Combinación natural (`NATURAL JOIN`)**: Une dos tablas automáticamente basándose en las columnas con el mismo nombre y tipo de dato.
 
-La notación para una combinación interna es **`R1 ⨝ condición R2`**.
+#### Traducción a SQL
+
+La combinación es una restricción sobre el producto cartesiano que vincula cada fila de una tabla con filas de otra tabla, de acuerdo a una condición dada. Existen varios tipos de combinaciones que se utilizan para extraer datos relacionados de diferentes tablas:
+
+- **Combinación interna (`INNER JOIN`)**: retorna solo las filas que tienen coincidencias en ambas tablas.
+
+  La operación `S INNER JOIN T ON (condición)` se expresa en SQL de la siguiente manera:
+
+  ```sql
+  SELECT lista de columnas FROM S INNER JOIN T ON condición;
+  ```
+
+- **Combinación externa (`OUTER JOIN`)**: devuelve todas las filas de una tabla y las filas coincidentes de otra tabla. Si no hay coincidencias, se llenan con valores nulos (NULL).
+
+  - **Combinación externa izquierda (`LEFT OUTER JOIN`)**: retorna todas las filas de la tabla izquierda (S) y las filas coincidentes de la tabla derecha (T).
+
+  ```sql
+  SELECT lista de columnas FROM S LEFT OUTER JOIN T ON condición;
+  ```
+
+  - **Combinación externa derecha (`RIGHT OUTER JOIN`)**: retorna todas las filas de la tabla derecha (T) y las filas coincidentes de la tabla izquierda (S).
+
+  ```sql
+  SELECT lista de columnas FROM S RIGHT OUTER JOIN T ON condición;
+  ```
+
+  - **Combinación externa completa (`FULL OUTER JOIN`)**: retorna todas las filas de ambas tablas, con coincidencias donde existan, y valores nulos donde no haya coincidencias.
+
+  ```sql
+  SELECT lista de columnas FROM S FULL OUTER JOIN T ON condición;
+  ```
+
+- **Combinación natural (`NATURAL JOIN`)**: se basa en columnas con el mismo nombre en ambas tablas y combina automáticamente las filas donde estas columnas coinciden.
+
+  La operación `S NATURAL JOIN T` se expresa en SQL de la siguiente manera:
+
+  ```sql
+  SELECT lista de columnas FROM S NATURAL JOIN T;
+  ```
 
 ### Campos calculados elementales
 
 Proyección sobre una relación asociada a un **cálculo** que se realiza sobre cada línea para **crear uno o varios atributos nuevos**.
 
-La notación es `Rx = ⫪ S (A1, ..., N1 = expresión calculada...)`
+La notación es `Rx = π S (A1, ..., N1 = expresión calculada...)`, donde π (pi) indica la proyección y se aplica un cálculo a cada fila para generar nuevas columnas.
 
 La expresión calculada puede ser:
 
@@ -437,13 +595,39 @@ La expresión calculada puede ser:
 
 - una función de cadena
 
-Por ejemplo, podemos calcular el total de un pedido multiplicando el precio unitario por la cantidad pedida `TOTAL_PEDIDO = ⫪ PEDIDO (PEDIDONUM, REF, LINEA = PRECIO * CANTIDAD)`
+Por ejemplo, podemos calcular el total de un pedido multiplicando el precio unitario por la cantidad pedida: `TOTAL_PEDIDO = π PEDIDO (PEDIDONUM, REF, LINEA = PRECIO * CANTIDAD)`
+
+#### Traducción a SQL
+
+Los campos calculados elementales permiten obtener columnas calculadas para cada fila.
+
+En SQL, los campos calculados se generan utilizando la cláusula `SELECT` con operaciones. La traducción de la operación `π S (A1, ..., N1 = expresión calculada...)` se traduce como:
+
+```sql
+SELECT col, ..., expresión FROM S;
+```
+
+Por ejemplo, podemos calcular el valor de los productos de un almacén:
+
+`ALMACEN = π ARTICULOS(REF, DESCRIPCION, COSTO = (PRECIO * VALOR))`
+
+Esto se puede traducir a SQL como:
+
+```sql
+SELECT REF, DESCRIPCION, (PRECIO * VALOR) FROM ARTICULOS;
+```
+
+Para asignar un nombre más claro a la columna calculada `(PRECIO * VALOR)`, se utiliza el alias `AS`:
+
+```sql
+SELECT REF, DESCRIPCION, (PRECIO * VALOR) AS VALOR_TOTAL FROM ARTICULOS;
+```
 
 ### Campos de valores agregados
 
 Proyección sobre una relación asociada con uno o varios valores agregados que se calculan sobre un atributo para todos los elementos de la relación o de la agrupación vinculada a la proyección, con el fin de **crear uno o varios atributos nuevos**.
 
-La notación es `Rx = ⫪ S (A1, ..., N1 = función estadística(Ax), ...)`
+La notación es `Rx = π S (A1, ..., N1 = función estadística(Ax), ...)`
 
 Las funciones estadísticas son:
 
@@ -457,7 +641,35 @@ Las funciones estadísticas son:
 
 - **MIN(atributo)**
 
-Por ejemplo, podemos calcular el número de clientes que hay en una tabla `NUMCLIENTES = ⫪ CLIENTES(N = COUNT(*))`. También podemos calcular el precio más alto, el más bajo y el precio medio por categoría de artículos `STATS = ⫪ ARTICULOS(CATEGORIA, CARO=MAX(PRECIO), BARATO=(PRECIO), MEDIO=(PRECIO))`
+Por ejemplo, podemos calcular el número de clientes que hay en una tabla `NUMCLIENTES = π CLIENTES(N = COUNT(*))`. También podemos calcular el precio más alto, el más bajo y el precio medio por categoría de artículos `STATS = π ARTICULOS(CATEGORIA, CARO=MAX(PRECIO), BARATO=(PRECIO), MEDIO=(PRECIO))`.
+
+#### Traducción a SQL
+
+Las **proyecciones del cálculo de valores agregados** permiten realizar cálculos estadísticos sobre los grupos especificados mediante `GROUP BY`.
+
+La operación `π S (col, ..., nvcol = cálculo estadístico)` se traduce a SQL de la siguiente manera:
+
+```sql
+SELECT lista de columnas, función_agregada FROM S GROUP BY lista de columnas;
+```
+
+La lista de columnas proyectadas debe ser **idéntica** a la lista de columnas agrupadas con `GROUP BY`.
+
+Si en la consulta se utilizan expresiones calculadas en las columnas del `SELECT`, la agrupación debe realizarse sobre las mismas expresiones. Por ejemplo, si se calcula el valor total de ventas con `precio * cantidad`, la agrupación también debe incluir `precio * cantidad` en lugar de solo precio o cantidad, para que los resultados reflejen correctamente los cálculos proyectados.
+
+```sql
+SELECT producto, precio * cantidad AS total_venta
+FROM ventas
+GROUP BY producto, precio * cantidad;
+```
+
+Referencias a las funciones de agregación en diferentes SGBDR:
+
+- [Aggregate Functions - MySQL](https://dev.mysql.com/doc/refman/9.0/en/aggregate-functions.html)
+
+- [Aggregate Functions - PostgreSQL](https://www.postgresql.org/docs/current/functions-aggregate.html)
+
+- [Aggregate Functions - Oracle Database](https://docs.oracle.com/en/database/oracle/oracle-database/21/sqlrf/Aggregate-Functions.html)
 
 ## SQL
 

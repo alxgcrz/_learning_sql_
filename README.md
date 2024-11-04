@@ -58,6 +58,12 @@ El lenguaje SQL se divide en cuatro subconjuntos:
   
   - **`ROLLBACK`**
 
+Las palabras clave SQL no distinguen entre mayúsculas y minúsculas. Por ejemplo, `SELECT` es lo mismo que `select`.
+
+Algunos sistemas de bases de datos requieren un punto y coma (`;`) al final de cada instrucción SQL.
+
+El punto y coma es la forma estándar de separar cada sentencia SQL en sistemas de bases de datos que permiten ejecutar más de una sentencia SQL en la misma llamada al servidor.
+
 > :warning: **Sección introductoria generada por ChatGPT**
 
 ## Modelo relacional
@@ -673,13 +679,53 @@ Referencias a las funciones de agregación en diferentes SGBDR:
 
 ## SQL
 
+### Select
+
+La sentencia `SELECT` se utiliza para seleccionar datos de una base de datos.
+
+```sql
+SELECT column1, column2, ... FROM table_name;
+```
+
+Para devolver todas las columnas sin especificar cada nombre de columna, se utiliza el asterisco (`*`) con el `SELECT`:
+
+```sql
+SELECT * FROM table_name;
+```
+
+La sentencia `SELECT DISTINCT` se utiliza para devolver solo valores distintos (diferentes). Dentro de una tabla, una columna a menudo contiene muchos valores duplicados y en ocasiones sólo se necesita listar los valores diferentes (distintos).
+
+```sql
+SELECT DISTINCT column1, column2, ... FROM table_name;
+```
+
+Al utilizar la palabra clave `DISTINCT` en una función `COUNT()`, podemos devolver el número de registros diferentes:
+
+```sql
+SELECT COUNT(DISTINCT column_name) FROM table_name;
+```
+
+Esta sentencia no funciona en Microsoft Acces. Una solución alternativa sería:
+
+```sql
+SELECT Count(*) AS column_name FROM (SELECT DISTINCT column_name FROM table_name);
+```
+
 ### Data Types
 
-- [MySQL](https://dev.mysql.com/doc/refman/9.0/en/data-types.html)
+- [MySQL](https://dev.mysql.com/doc/refman/9.1/en/data-types.html)
 
 - [PostgreSQL](https://www.postgresql.org/docs/current/datatype.html)
 
 - [Oracle Database](https://docs.oracle.com/en/database/oracle/oracle-database/21/sqlrf/Data-Types.html)
+
+### Functions
+
+- [MySQL](https://dev.mysql.com/doc/refman/9.1/en/functions.html)
+
+- [PostgreSQL](https://www.postgresql.org/docs/current/functions.html)
+
+- [Oracle Database](https://docs.oracle.com/en/database/oracle/oracle-database/21/sqlrf/Functions.html)
 
 ---
 
@@ -805,7 +851,7 @@ docker stop postgres-container
 ### General
 
 - <https://roadmap.sh/sql>
-- 👍<https://www.w3schools.com/sql/default.asp>
+- <https://www.w3schools.com/sql/default.asp>
 - <https://www.sqltutorial.org/>
 - <https://www.sqlitetutorial.net/>
 - <https://datalemur.com/sql-tutorial>

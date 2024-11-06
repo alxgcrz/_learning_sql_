@@ -58,11 +58,9 @@ El lenguaje SQL se divide en cuatro subconjuntos:
   
   - **`ROLLBACK`**
 
-Las palabras clave SQL no distinguen entre mayúsculas y minúsculas. Por ejemplo, `SELECT` es lo mismo que `select`.
+Las palabras clave SQL **no distinguen entre mayúsculas y minúsculas**. Por ejemplo, `SELECT` es lo mismo que `select`.
 
-Algunos sistemas de bases de datos requieren un punto y coma (`;`) al final de cada instrucción SQL.
-
-El punto y coma es la forma estándar de separar cada sentencia SQL en sistemas de bases de datos que permiten ejecutar más de una sentencia SQL en la misma llamada al servidor.
+Algunos sistemas de bases de datos **requieren un punto y coma** (`;`) al final de cada instrucción SQL. Es la forma estándar de separar cada sentencia SQL en sistemas de bases de datos que permiten ejecutar **más de una sentencia SQL** en la misma llamada al servidor.
 
 > :warning: **Sección introductoria generada por ChatGPT**
 
@@ -708,8 +706,104 @@ SELECT COUNT(DISTINCT column_name) FROM table_name;
 Esta sentencia no funciona en Microsoft Acces. Una solución alternativa sería:
 
 ```sql
-SELECT Count(*) AS column_name FROM (SELECT DISTINCT column_name FROM table_name);
+SELECT COUNT(*) AS column_name FROM (SELECT DISTINCT column_name FROM table_name);
 ```
+
+### Where
+
+La cláusula `WHERE` se utiliza para filtrar registros, extrayendo aquellos registros que cumplen una condición específica.
+
+```sql
+SELECT column1, column2, ... FROM table_name WHERE condition;
+```
+
+La cláusula `WHERE` no solo se utiliza en sentencias `SELECT` sino que también se emplea en sentencias `UPDATE`, `DELETE`, etc.
+
+#### Text Fields vs. Numeric Fields
+
+SQL requiere **comillas simples alrededor de los valores de texto** (la mayoría de los sistemas de bases de datos también permiten comillas dobles).
+
+Sin embargo, **los campos numéricos no deben ir entre comillas**.
+
+```sql
+-- Usando comillas simples
+SELECT * FROM clientes WHERE nombre = 'Carlos';
+
+-- Usando comillas dobles (si el sistema lo permite)
+SELECT * FROM clientes WHERE nombre = "Carlos";
+
+-- Valor numérico sin comillas
+SELECT * FROM productos WHERE precio = 100;
+
+-- Incorrecto: el valor numérico entre comillas puede causar errores inesperados
+SELECT * FROM productos WHERE precio = '100';
+```
+
+#### Operators
+
+Los operadores se utilizan para filtrar la búsqueda.
+
+- **Igual que (`=`)**
+
+  ```sql
+  SELECT * FROM Products WHERE Price = 18;
+  ```
+
+- **Mayor o menor que (`>`, `<`)**
+
+  ```sql
+  SELECT * FROM productos WHERE precio > 50;
+  ```
+
+- **Mayor o igual que (`>=`), menor o igual que (`<=`)**
+
+  ```sql
+  SELECT * FROM empleados WHERE antiguedad >= 5;
+  ```
+
+- **Distinto de (`<>` o `!=`)**
+  
+  ```sql
+  SELECT * FROM pedidos WHERE estado <> 'completado';
+  ```
+
+- **Operador `LIKE` (para búsquedas de patrones)**
+
+  ```sql
+  SELECT * FROM clientes WHERE nombre LIKE 'An%';
+  ```
+
+- **Operador `BETWEEN` (para rangos)**
+
+  ```sql
+  SELECT * FROM productos WHERE precio BETWEEN 100 AND 200;
+  ```
+
+- **Operador `IN` (para listas de valores)**
+  
+  ```sql
+  SELECT * FROM empleados WHERE departamento_id IN (1, 2, 3);
+  ```
+
+### Order BY
+
+La palabra clave `ORDER BY` se utiliza para ordenar el conjunto de resultados en orden ascendente o descendente.
+
+```sql
+SELECT column1, column2, ... FROM table_name ORDER BY column1, column2, ... ASC|DESC;
+```
+
+En una cláusula de ejemplo como `ORDER BY column1, column2 ASC;`, el orden de los resultados funcionaría de la siguiente manera:
+
+1. Primero, se ordena por `column1`. Los registros se ordenan en orden ascendente (de menor a mayor) según los valores en `column1`.
+
+2. Luego, se ordena por `column2` en caso de empate. Si hay registros que tienen el mismo valor en `column1`, entonces esos registros se ordenarán según los valores de `column2`, también en orden ascendente (de menor a mayor).
+
+Otro cláusula de ejemplo como `ORDER BY column1 DESC, column2 ASC;` funcionaría de la misma manera, cambiando únicamente si es ascendente o descendente.
+
+La palabra clave `ORDER BY` ordena los registros **en orden ascendente por defecto**. Para ordenar los registros en orden descendente, se debe usar la palabra clave `DESC`.
+
+Para los valores de texto, la palabra clave `ORDER BY` ordenará **alfabéticamente**.
 
 ### Data Types
 

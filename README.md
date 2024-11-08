@@ -805,6 +805,32 @@ La palabra clave `ORDER BY` ordena los registros **en orden ascendente por defec
 
 Para los valores de texto, la palabra clave `ORDER BY` ordenará **alfabéticamente**.
 
+### And
+
+El operador `AND` se utiliza para filtrar registros en función de dos o más condiciones. Se mostrará el registro **si todas las condiciones son verdaderas**.
+
+```sql
+SELECT column1, column2, ... FROM table_name WHERE condition1 AND condition2 AND condition3 ...;
+```
+
+Los operadores `AND` y `OR` se pueden combinar en la misma consulta. En ese caso se puede usar paréntesis para agrupar distintas cláusulas.
+
+### Or
+
+La cláusula `WHERE` puede contener uno o más operadores `OR`.
+
+Este operador se utiliza para filtrar registros en función de dos o más condiciones. Se mostrará el registro **si alguna de las condiciones es verdadera**.
+
+```sql
+SELECT column1, column2, ... FROM table_name WHERE condition1 OR condition2 OR condition3 ...;
+```
+
+Los operadores `AND` y `OR` se pueden combinar en la misma consulta. En ese caso se puede usar paréntesis para agrupar distintas cláusulas.
+
+### Not
+
+TODO
+
 ### Data Types
 
 - [MySQL](https://dev.mysql.com/doc/refman/9.1/en/data-types.html)

@@ -829,6 +829,163 @@ Los operadores `AND` y `OR` se pueden combinar en la misma consulta. En ese caso
 
 ### Not
 
+El operador `NOT` se utiliza en combinación con otros operadores para obtener el resultado opuesto, también llamado resultado negativo.
+
+```sql
+SELECT column1, column2, ... FROM table_name WHERE NOT condition;
+```
+
+- **`NOT LIKE`**
+
+```sql
+-- Select customers that does not start with the letter 'A':
+SELECT * FROM Customers WHERE CustomerName NOT LIKE 'A%';
+```
+
+- **`NOT BETWEEN`**
+
+```sql
+-- Select customers with a customerID not between 10 and 60:
+SELECT * FROM Customers WHERE CustomerID NOT BETWEEN 10 AND 60;
+```
+
+- **`NOT IN`**
+
+```sql
+-- Select customers that are not from Paris or London:
+SELECT * FROM Customers WHERE City NOT IN ('Paris', 'London');
+```
+
+- **`NOT Greater Than`**
+
+```sql
+-- Select customers with a CustomerId not greater than 50:
+SELECT * FROM Customers WHERE NOT CustomerID > 50;
+```
+
+- **`NOT Less Than`**
+
+```sql
+-- Select customers with a CustomerID not less than 50:
+SELECT * FROM Customers WHERE NOT CustomerId < 50;
+```
+
+### Insert Into
+
+La instrucción `INSERT INTO` se utiliza para insertar nuevos registros en una tabla. Es posible escribir la instrucción `INSERT INTO` de varias maneras:
+
+- De **forma declarativa**, especificando tanto los nombres de las columnas como los valores a insertar. Es la forma menos propensa a errores:
+
+```sql
+INSERT INTO table_name (column1, column2, column3, ...) VALUES (value1, value2, value3, ...);
+```
+
+- **De forma implícita**. ya que si se están agregando valores para **todas las columnas** de la tabla, no es necesario especificar los nombres de las columnas en la consulta SQL. Sin embargo, hay que asegurarse de que el orden de los valores sea el mismo que el de las columnas en la tabla. En este caso, la sintaxis de `INSERT INTO` sería la siguiente:
+
+```sql
+INSERT INTO table_name VALUES (value1, value2, value3, ...);
+```
+
+- **Mediante una subconsulta `SELECT`**, para insertar registros desde otra tabla o consulta. Esto permite copiar datos de una fuente existente o generar datos dinámicamente. En este caso, la sintaxis de `INSERT INTO` sería la siguiente:
+
+```sql
+NSERT INTO table_name (column1, column2, column3, ...)
+SELECT value1, value2, value3, ... FROM other_table WHERE condition;
+```
+
+También es posible insertar **varias filas en una sola instrucción**. Para insertar múltiples filas de datos, se utiliza la misma instrucción `INSERT INTO`, pero con varios conjuntos de valores:
+
+```sql
+INSERT INTO table_name (column1, column2, column3, ...)
+VALUES (value1_1, value2_1, value3_1, ...),
+       (value1_2, value2_2, value3_2, ...),
+       (value1_3, value2_3, value3_3, ...);
+```
+
+Hay que asegurarse de separar cada conjunto de valores con una coma (`,`).
+
+### Null Values
+
+Un campo con un valor `NULL` es un **campo sin valor**.
+
+Si un campo en una tabla es opcional, es posible insertar un nuevo registro o actualizar un registro sin agregar un valor a este campo. En ese caso, el campo se guardará con un valor `NULL`.
+
+> Un valor `NULL` es diferente de un valor cero o de un campo que contiene espacios. Un campo con un valor `NULL` es aquel que ha sido dejado en blanco durante la creación del registro.
+
+No es posible probar los valores `NULL` con operadores de comparación, como `=`, `<` o `<>`. En su lugar, se debe usar los operadores `IS NULL` e `IS NOT NULL`.
+
+```sql
+-- IS NULL Syntax
+SELECT column_names FROM table_name WHERE column_name IS NULL;
+
+-- IS NOT NULL Syntax
+SELECT column_names FROM table_name WHERE column_name IS NOT NULL;
+```
+
+### Update
+
+La instrucción `UPDATE` se utiliza para modificar los registros existentes en una tabla.
+
+```sql
+UPDATE table_name SET column1 = value1, column2 = value2, ... WHERE condition;
+```
+
+> Hay que tener **especial atención** al actualizar registros en una tabla. La cláusula `WHERE` especifica qué registro(s) deben ser actualizados. Si se omite la cláusula `WHERE`, ¡todos los registros en la tabla serán actualizados!
+
+### Delete
+
+La instrucción `DELETE` se utiliza para eliminar registros existentes en una tabla.
+
+```sql
+DELETE FROM table_name WHERE condition;
+```
+
+> Hay que tener **especial atención** al eliminar registros en una tabla. La cláusula `WHERE` especifica qué registro(s) deben ser eliminados. Si se omite la cláusula `WHERE`, ¡todos los registros en la tabla serán eliminados!
+
+### Filter
+
+Cuando trabajamos con bases de datos, a menudo necesitamos **limitar el número de registros** que una consulta `SELECT` devuelve. Esto es útil cuando solo queremos obtener una muestra de los datos o cuando estamos trabajando con tablas grandes y queremos optimizar el rendimiento.
+
+En SQL, se pueden utilizar diferentes cláusulas para controlar la cantidad de registros devueltos, como `LIMIT` en MySQL o `SELECT TOP` en SQL Server. A continuación, veremos cómo se aplica en los principales sistemas de gestión de bases de datos:
+
+- **_SQL Server / MS Access Syntax:_**
+
+```sql
+SELECT TOP number|percent column_name(s) FROM table_name WHERE condition;
+
+-- With ORDER BY
+SELECT TOP number column_name(s) FROM table_name WHERE condition ORDER BY column_name ASC|DESC;
+```
+
+- **_MySQL | PostgreSQL Syntax:_**
+
+```sql
+SELECT column_name(s) FROM table_name WHERE condition LIMIT number;
+
+-- With ORDER BY
+SELECT column_name(s) FROM table_name WHERE condition ORDER BY column_name(s) ASC|DESC LIMIT number;
+```
+
+- **_Oracle 12 Syntax:_**
+
+```sql
+SELECT column_name(s) FROM table_name ORDER BY column_name(s) FETCH FIRST number ROWS ONLY;
+```
+
+- **_Older Oracle Syntax:_**
+
+```sql
+SELECT column_name(s) FROM table_name WHERE ROWNUM <= number;
+```
+
+- **_Older Oracle Syntax (with ORDER BY):_**
+
+```sql
+SELECT * FROM (SELECT column_name(s) FROM table_name ORDER BY column_name(s)) WHERE ROWNUM <= number;
+```
+
+### Aggregate Functions
+
 TODO
 
 ### Data Types

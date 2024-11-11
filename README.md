@@ -986,6 +986,126 @@ SELECT * FROM (SELECT column_name(s) FROM table_name ORDER BY column_name(s)) WH
 
 ### Aggregate Functions
 
+Una función de agregación es una función que realiza un **cálculo sobre un conjunto de valores y devuelve un único valor**.
+
+Las funciones de agregación se utilizan a menudo junto con la cláusula `GROUP BY` en la instrucción `SELECT`. La cláusula `GROUP BY` divide el conjunto de resultados en grupos de valores y la función de agregación puede usarse para devolver un solo valor para cada grupo.
+
+Las funciones de agregación ignoran los valores `NULL` (excepto `COUNT()`).
+
+#### Min and Max
+
+- **`MIN()`**: devuelve el valor más pequeño dentro de la columna seleccionada
+
+```sql
+SELECT MIN(column_name) FROM table_name WHERE condition;
+```
+
+- **`MAX()`**: devuelve el valor más grande dentro de la columna seleccionada
+
+```sql
+SELECT MAX(column_name) FROM table_name WHERE condition;
+```
+
+Cuando se utiliza `MIN()` o `MAX()`, la columna devuelta no tendrá un nombre descriptivo. Para darle un nombre descriptivo a la columna, se utiliza la palabra clave `AS`:
+
+```sql
+SELECT MIN(Price) AS SmallestPrice FROM Products;
+```
+
+#### Count
+
+La función `COUNT()` devuelve el número de filas que coinciden con un criterio especificado.
+
+```sql
+SELECT COUNT(column_name) FROM table_name WHERE condition;
+```
+
+Se puede especificar un nombre de columna en lugar del símbolo asterisco (`*`).
+
+- **`COUNT(*)`** cuenta todas las filas, incluyendo aquellas con valores `NULL` en cualquiera de sus columnas.
+
+- **`COUNT(column_name)`** cuenta solo las filas donde _'column_name'_ no es `NULL`.
+
+```sql
+-- Cuenta todas las filas en la tabla, incluyendo las que tienen valores NULL
+SELECT COUNT(*) AS total_employees FROM employees;
+
+-- Cuenta solo las filas donde 'salary' no es NULL
+SELECT COUNT(salary) AS employees_with_salary FROM employees;
+
+-- Cuenta solo las filas donde 'department' no es NULL
+SELECT COUNT(department) AS employees_with_department FROM employees;
+
+-- Cuenta las filas donde 'salary' es NULL (filtradas por la cláusula WHERE)
+SELECT COUNT(*) AS employees_without_salary FROM employees WHERE salary IS NULL;
+```
+
+Se pueden ignorar duplicados utilizando la palabra clave `DISTINCT` en la función `COUNT()`.
+
+Si se especifica `DISTINCT`, las filas con el mismo valor en la columna especificada se contarán como una sola.
+
+Es importante destacar que, al usar `DISTINCT`, se debe especificar un nombre de columna, ya que no se puede utilizar `DISTINCT` con el asterisco (`*`).
+
+```sql
+SELECT COUNT(DISTINCT column_name) FROM table_name WHERE condition;
+```
+
+Para darle un nombre a la columna contada, se puede usar la palabra clave `AS` para asignar un alias:
+
+```sql
+-- Cuenta filas únicas en la columna 'department' y le da un nombre a la columna con 'AS'
+SELECT COUNT(DISTINCT department) AS unique_departments FROM employees;
+```
+
+#### Sum
+
+La función `SUM()` devuelve la suma total de una columna numérica.
+
+```sql
+SELECT SUM(column_name) FROM table_name WHERE condition;
+```
+
+Para darle un nombre a la columna utilizada, se puede usar la palabra clave `AS` para asignar un alias:
+
+```sql
+SELECT SUM(Quantity) AS total FROM OrderDetails;
+```
+
+El parámetro dentro de la función `SUM()` también puede ser una expresión. Esto permite realizar cálculos sobre los valores antes de sumarlos, como podrían ser sumas, restas, multiplicaciones o divisiones.
+
+```sql
+-- Suma de los salarios después de aplicar un descuento
+SELECT SUM(salary * 0.9) AS total_salary_after_discount FROM employees;
+```
+
+También se puede usar funciones matemáticas provistas por los distintos SGBD como `ROUND()` o `ABS()`:
+
+```sql
+SELECT SUM(ROUND(salary, 2)) AS total_rounded_salary FROM employees;
+```
+
+#### Avg
+
+La función `AVG()` devuelve el valor promedio de una columna numérica, dónde los valores `NULL` son ignorados.
+
+```sql
+SELECT AVG(column_name) FROM table_name WHERE condition;
+```
+
+Para darle un nombre a la columna utilizada, se puede usar la palabra clave `AS` para asignar un alias:
+
+```sql
+SELECT AVG(Price) AS AveragePrice FROM Products;
+```
+
+Para listar todos los registros con un precio superior al promedio, podemos utilizar la función `AVG()` en una subconsulta:
+
+```sql
+SELECT * FROM Products WHERE Price > (SELECT AVG(Price) FROM Products);
+```
+
+### Like
+
 TODO
 
 ### Data Types

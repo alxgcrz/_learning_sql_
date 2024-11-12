@@ -1106,6 +1106,80 @@ SELECT * FROM Products WHERE Price > (SELECT AVG(Price) FROM Products);
 
 ### Like
 
+El operador `LIKE` se utiliza en cláusulas `WHERE` para buscar un patrón específico en una columna.
+
+```sql
+SELECT column1, column2, ... FROM table_name WHERE columnN LIKE pattern;
+```
+
+Existen dos **comodines o [_wildcards_](#wildcards)** que suelen utilizarse junto con el operador `LIKE`:
+
+- El signo de porcentaje (`'%'`) representa cero, uno o múltiples caracteres.
+
+```sql
+-- Encuentra todos los registros donde el nombre empieza con 'A'
+SELECT * FROM table_name WHERE column_name LIKE 'A%';
+
+-- Encuentra todos los registros donde el nombre termina con 'Z'
+SELECT * FROM table_name WHERE column_name LIKE '%Z';
+
+-- Encuentra todos los registros donde el nombre contiene 'abc'
+SELECT * FROM table_name WHERE column_name LIKE '%abc%';
+
+-- Encuentra todos los registros donde el nombre empieza con 'A' y termina con 'Z'
+SELECT * FROM table_name WHERE column_name LIKE 'A%Z';
+```
+
+- El guion bajo (`'_'`) representa un solo carácter individual, lo que incluye tanto letras como números y símbolos.
+
+```sql
+-- Encuentra todos los registros donde el nombre tiene exactamente tres caracteres y empieza con 'A'
+SELECT * FROM table_name WHERE column_name LIKE 'A__';
+
+-- Encuentra todos los registros donde el nombre:
+-- - Empieza con 'L'
+-- - Tiene cualquier carácter en la segunda posición
+-- - Continúa con 'nd'
+-- - Tiene cualquier carácter en la quinta y sexta posición
+SELECT * FROM table_name WHERE column_name LIKE 'L_nd__';
+```
+
+Cualquier comodín, como `'%'` y `'_'`, se puede combinar entre sí:
+
+```sql
+SELECT * FROM Customers WHERE CustomerName LIKE 'a__%';
+```
+
+Si no se especifica ningún comodín, la frase debe coincidir exactamente para que se devuelva un resultado:
+
+```sql
+SELECT * FROM Customers WHERE Country LIKE 'Spain';
+```
+
+### Wildcards
+
+Un **carácter comodín o [_wildcard_](#wildcards)** se utiliza para sustituir uno o más caracteres en una cadena.
+
+Los caracteres comodín se utilizan con el operador `LIKE`. El operador `LIKE` se usa en cláusulas `WHERE` para buscar un patrón específico en una columna.
+
+- **`%`** - Representa cero o más carácteres
+
+- **`_`** - Representa un carácter individual
+
+- **`[]`** - Representa cualquier carácter individual dentro de los corchetes (*)
+
+- **`^`** - Representa cualquier carácter que no esté dentro de los corchetes (*)
+
+- **`-`** - Representa cualquier carácter individual dentro del rango especificado (*)
+
+- **`{}`** - Representa cualquier carácter escapado (**)
+
+(*) No soportado en PostgreSQL y MySQL
+
+(**) _Soportado sólo en Oracle_
+
+### In
+
 TODO
 
 ### Data Types

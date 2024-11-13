@@ -1180,6 +1180,123 @@ Los caracteres comodín se utilizan con el operador `LIKE`. El operador `LIKE` s
 
 ### In
 
+El operador `IN` permite especificar múltiples valores en una cláusula `WHERE`.
+
+El operador `IN` es una **forma abreviada** de múltiples condiciones `OR`.
+
+```sql
+SELECT column_name(s) FROM table_name WHERE column_name IN (value1, value2, ...);
+```
+
+Al utilizar la palabra clave `NOT` delante del operador `IN`, se devuelven todos los registros que **NO** coinciden con ninguno de los valores en la lista.
+
+```sql
+SELECT column_name(s) FROM table_name WHERE column_name NOT IN (value1, value2, ...);
+```
+
+También se puede usar `IN` con una subconsulta en la cláusula `WHERE`.
+
+Con una subconsulta, se pueden devolver todos los registros de la consulta principal que estén presentes en el resultado de la subconsulta utilizando el operador `IN`, o bien los registros que no estén en el resultado de la subconsulta si se utiliza el operador `NOT IN`:
+
+```sql
+-- IN
+SELECT * FROM Customers WHERE CustomerID IN (SELECT CustomerID FROM Orders);
+
+-- NOT IN
+SELECT * FROM Customers WHERE CustomerID NOT IN (SELECT CustomerID FROM Orders);
+```
+
+### Between
+
+El operador `BETWEEN` selecciona valores dentro de un rango dado. Los valores pueden ser números, texto o fechas.
+
+El operador `BETWEEN` es **inclusivo**: los valores inicial y final están incluidos.
+
+```sql
+SELECT column_name(s) FROM table_name WHERE column_name BETWEEN value1 AND value2;
+```
+
+Para mostrar los productos fuera del rango del ejemplo anterior, utiliza `NOT BETWEEN`:
+
+```sql
+SELECT column_name(s) FROM table_name WHERE column_name NOT BETWEEN value1 AND value2;
+```
+
+Algunos ejemplos con `BETWEEN`:
+
+```sql
+-- MySQL, PostgreSQL y SQL Server
+SELECT * FROM Orders WHERE OrderDate BETWEEN '1996-07-01' AND '1996-07-31';
+
+-- Microsoft Access
+SELECT * FROM Orders WHERE OrderDate BETWEEN #07/01/1996# AND #07/31/1996#;
+
+-- Selects all products with a ProductName alphabetically between Carnarvon and Mozzarella:
+SELECT * FROM Products WHERE ProductName BETWEEN 'Carnarvon' AND 'Mozzarella' ORDER BY ProductName;
+
+-- NOT BETWEEN
+SELECT * FROM Products WHERE Price NOT BETWEEN 10 AND 20;
+
+-- BETWEEN with IN
+SELECT * FROM Products WHERE Price BETWEEN 10 AND 20 AND CategoryID IN (1,2,3);
+```
+
+### Aliases
+
+Los alias en SQL se utilizan para dar **un nombre temporal a una tabla o columna**, mejorando la legibilidad.
+
+Un alias solo existe durante la ejecución de la consulta y se crea con la palabra clave `AS`. En la mayoría de los lenguajes de bases de datos, puedes omitir la palabra clave `AS` ya que es **opcional** y obtener el mismo resultado.
+
+```sql
+-- Alias used on COLUMN
+SELECT column_name AS alias_name FROM table_name;
+
+-- Alias used on TABLE
+SELECT column_name(s) FROM table_name AS alias_name;
+```
+
+Se pueden utilizar múltiples alias en una misma consulta, como en el siguiente ejemplo:
+
+```sql
+SELECT CustomerID AS ID, CustomerName AS Customer FROM Customers;
+```
+
+Si un alias contiene **espacios en blanco**, es necesario envolverlo entre corchetes (`[]`) o comillas dobles (`""`) para que sea válido. Sin embargo, no todos los sistemas de gestión de bases de datos permiten ambos métodos:
+
+```sql
+-- SQL Server
+SELECT ProductName AS [My Great Products] FROM Products;
+
+-- PostgreSQL
+SELECT ProductName AS "My Great Products" FROM Products;
+
+-- MySQL
+SELECT ProductName AS `My Great Products` FROM Products;
+```
+
+Se pueden concatencar columnas cuando se crea un alias con `AS`:
+
+```sql
+-- SQL Server
+SELECT CustomerName, Address + ', ' + PostalCode + ' ' + City + ', ' + Country AS Address FROM Customers;
+
+-- Oracle y PostgreSQL (||)
+SELECT CustomerName, (Address || ', ' || PostalCode || ' ' || City || ', ' || Country) AS Address FROM Customers;
+
+-- MySQL (concat())
+SELECT CustomerName, CONCAT(Address,', ',PostalCode,', ',City,', ',Country) AS Address FROM Customers;
+```
+
+Las mismas reglas se aplican cuando se usan los alias para una tabla. Puede parecer innecesario usar alias en las tablas, pero cuando se utilizan más de una tabla en ciertas consultas, puede hacer que las sentencias SQL sean más cortas.
+
+```sql
+SELECT o.OrderID, o.OrderDate, c.CustomerName
+FROM Customers AS c, Orders AS o
+WHERE c.CustomerName='Around the Horn' AND c.CustomerID=o.CustomerID;
+```
+
+### Joins
+
 TODO
 
 ### Data Types

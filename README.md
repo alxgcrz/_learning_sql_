@@ -992,7 +992,7 @@ Las funciones de agregación se utilizan a menudo junto con la cláusula `GROUP 
 
 Las funciones de agregación ignoran los valores `NULL` (excepto `COUNT()`).
 
-#### Min and Max
+#### MIN() and MAX()
 
 - **`MIN()`**: devuelve el valor más pequeño dentro de la columna seleccionada
 
@@ -1012,7 +1012,7 @@ Cuando se utiliza `MIN()` o `MAX()`, la columna devuelta no tendrá un nombre de
 SELECT MIN(Price) AS SmallestPrice FROM Products;
 ```
 
-#### Count
+#### COUNT()
 
 La función `COUNT()` devuelve el número de filas que coinciden con un criterio especificado.
 
@@ -1057,7 +1057,7 @@ Para darle un nombre a la columna contada, se puede usar la palabra clave `AS` p
 SELECT COUNT(DISTINCT department) AS unique_departments FROM employees;
 ```
 
-#### Sum
+#### SUM()
 
 La función `SUM()` devuelve la suma total de una columna numérica.
 
@@ -1084,7 +1084,7 @@ También se puede usar funciones matemáticas provistas por los distintos SGBD c
 SELECT SUM(ROUND(salary, 2)) AS total_rounded_salary FROM employees;
 ```
 
-#### Avg
+#### AVG()
 
 La función `AVG()` devuelve el valor promedio de una columna numérica, dónde los valores `NULL` son ignorados.
 
@@ -1299,6 +1299,448 @@ WHERE c.CustomerName='Around the Horn' AND c.CustomerID=o.CustomerID;
 
 TODO
 
+### Inner Join
+
+TODO
+
+### Left Join
+
+TODO
+
+### Right Join
+
+TODO
+
+### Full Join
+
+TODO
+
+### Self Join
+
+TODO
+
+### Union
+
+El operador `UNION` se utiliza para **combinar los resultados** de dos o más sentencias `SELECT`.  
+
+- Cada sentencia `SELECT` dentro de `UNION` debe tener el mismo número de columnas.  
+
+- Las columnas deben tener tipos de datos similares.  
+
+- Las columnas en cada sentencia `SELECT` también deben estar en el mismo orden.
+
+```sql
+SELECT column_name(s) FROM table1 WHERE condition
+UNION
+SELECT column_name(s) FROM table2 WHERE condition;
+```
+
+El operador `UNION` selecciona únicamente valores distintos de forma predeterminada. Para permitir valores duplicados, utiliza `UNION ALL`:
+
+```sql
+SELECT column_name(s) FROM table1 WHERE condition
+UNION ALL
+SELECT column_name(s) FROM table2 WHERE condition;
+```
+
+Los nombres de las columnas en el conjunto de resultados suelen ser iguales a los nombres de las columnas en la primera sentencia `SELECT`.
+
+### Group By
+
+La sentencia `GROUP BY` agrupa filas que comparten los mismos valores en categorías, como "encontrar el número de clientes en cada país".  
+
+Se utiliza a menudo con funciones de agregación (`COUNT()`, `MAX()`, `MIN()`, `SUM()`, `AVG()`) para agrupar el conjunto de resultados por una o más columnas.
+
+```sql
+SELECT column_name(s)
+FROM table_name
+WHERE condition
+GROUP BY column_name(s)
+ORDER BY column_name(s);
+```
+
+Es decir, el concepto clave del `GROUP BY` es que permite agrupar los registros en conjuntos basados en el valor de una o más columnas, y una vez formados esos conjuntos, se pueden aplicar funciones de agregación para obtener información resumida sobre ellos, como contar cuántos registros hay (`COUNT()`), calcular promedios (`AVG()`), sumar valores (`SUM()`), o encontrar valores máximos y mínimos (`MAX()`, `MIN()`).  
+
+Por ejemplo, si agrupamos los registros por el país de un cliente, cada grupo contendrá todos los registros correspondientes a un país específico, y luego podríamos contar cuántos clientes hay en cada país o calcular el gasto promedio por país.
+
+```sql
+-- Agrupa los registros por país y calcula el número total de registros en cada grupo
+SELECT pais, COUNT(*) AS total
+FROM tabla
+GROUP BY pais;
+```
+
+La sintaxis de `GROUP BY` efectivamente utiliza comas para separar las columnas, y cuando agrupas por dos o más columnas, se crean conjuntos que coinciden con todas las combinaciones posibles de valores únicos en esas columnas.
+
+```sql
+-- Agrupa los registros por país y ciudad y calcula el número total de registros en cada grupo
+SELECT pais, ciudad, COUNT(*) AS total
+FROM tabla
+GROUP BY pais, ciudad;
+```
+
+### Having
+
+La cláusula `HAVING` se añadió a SQL porque la palabra clave `WHERE` no se puede usar con funciones de agregación.
+
+```sql
+SELECT column_name(s)
+FROM table_name
+WHERE condition
+GROUP BY column_name(s)
+HAVING condition
+ORDER BY column_name(s);
+```
+
+La cláusula `HAVING` se utiliza para filtrar los resultados después de aplicar una función de agregación (como `COUNT()`, `SUM()`, `AVG()`, etc.). A diferencia de `WHERE`, que filtra las filas antes de aplicar las funciones de agregación y por tanto antes del `GROUP BY`, la cláusula `HAVING` permite aplicar condiciones sobre los resultados ya agrupados y agregados.
+
+Dicho de otro modo, la cláusula `WHERE` se utiliza antes del `GROUP BY` para filtrar los registros y reducir el conjunto de datos con los que se va a trabajar. Por tanto, la función `COUNT()` o cualquier otra función de agregación solo se aplicará sobre los registros que pasen el filtro del `WHERE`.
+
+Por ejemplo, si queremos contar cuántos registros hay en cada país y ciudad, y luego mostrar solo aquellos países con más de 5 registros, podemos usar `HAVING` para filtrar el resultado de la agregación:
+
+```sql
+-- Agrupa los registros por país y ciudad, calcula el número total de registros por cada grupo
+-- y muestra solo aquellos países donde el número total de registros es mayor que 5
+SELECT pais, ciudad, COUNT(*) AS total
+FROM tabla
+GROUP BY pais, ciudad
+HAVING COUNT(*) > 5; -- Filtra los grupos con más de 5 registros
+```
+
+En este ejemplo, `HAVING COUNT(*) > 5` filtra los resultados de la agregación, mostrando solo aquellos países y ciudades que tienen más de 5 registros en total.
+
+Para contar solo las filas donde tanto el país como la ciudad no son `NULL`, se puede usar una condición en la cláusula `WHERE` antes de hacer el `GROUP BY` para restringir los registros:
+
+```sql
+-- Cuenta solo las filas donde tanto pais como ciudad no sean NULL
+SELECT pais, ciudad, COUNT(*) AS total
+FROM tabla
+WHERE pais IS NOT NULL AND ciudad IS NOT NULL
+GROUP BY pais, ciudad;
+```
+
+### Exists
+
+El operador `EXISTS` se utiliza para comprobar la existencia de algún registro en una subconsulta. Retorna `TRUE` si la subconsulta devuelve uno o más registros.
+
+```sql
+SELECT column_name(s)
+FROM table_name
+WHERE EXISTS
+(SELECT column_name FROM table_name WHERE condition);
+```
+
+El operador `EXISTS` y el operador `IN` son similares en algunos aspectos, pero tienen diferencias clave en su funcionamiento.
+
+El operador `IN` se utiliza para verificar si **un valor dado coincide con cualquiera de los valores** de una lista o subconsulta. `IN` evalúa una lista de valores y puede devolver un conjunto de resultados basado en los valores exactos que se comparan.
+
+```sql
+SELECT * FROM Customers WHERE CustomerID IN (SELECT CustomerID FROM Orders);
+```
+
+En cambio, el operador `EXISTS` se utiliza para comprobar si **la subconsulta devuelve al menos un registro**. `EXISTS` no se preocupa por los valores específicos que devuelve la subconsulta, solo se interesa en si hay registros o no.
+
+```sql
+SELECT * FROM Customers c WHERE EXISTS (SELECT 1 FROM Orders o WHERE c.CustomerID = o.CustomerID);
+```
+
+El operador `IN` puede ser más lento si la subconsulta devuelve muchos resultados, ya que tiene que comprobar cada valor. Por su parte, el operador `EXISTS` generalmente es más eficiente, ya que solo necesita saber si existen resultados, sin preocuparse por el número de registros.
+
+### Any, All
+
+Los operadores `ANY` y `ALL` permiten realizar una comparación entre un solo valor de columna y un conjunto de valores (un rango). Estos operadores son útiles cuando se necesita comparar un valor con los resultados de una subconsulta.
+
+El operador `ANY` devuelve un valor booleano que será `TRUE` si **CUALQUIERA de los valores** de la subconsulta cumple con la condición.
+
+Por tanto, `ANY` significa que la condición será verdadera si la operación es verdadera para **al menos uno** de los valores en el rango.
+
+```sql
+SELECT column_name(s) 
+FROM table_name 
+WHERE column_name operator ANY 
+  (SELECT column_name FROM table_name WHERE condition);
+```
+
+El operador debe ser un **operador de comparación estándar** (=, <>, !=, >, >=, < o <=).
+
+```sql
+-- Muestra los nombres de productos que tienen un ProductID en la lista de OrderDetails con cantidad 10
+SELECT ProductName 
+SELECT ProductName 
+FROM Products
+WHERE ProductID = ANY (SELECT ProductID FROM OrderDetails WHERE Quantity = 10);
+
+-- Muestra todas las órdenes con un monto mayor a alguna de las órdenes de un cliente específico
+SELECT * 
+FROM Orders
+WHERE OrderAmount > ANY (SELECT OrderAmount FROM Orders WHERE CustomerID = 'ALFKI');
+```
+
+El operador `ALL` también devuelve un valor booleano. En este caso, devuelve `TRUE` si **TODOS los valores** de la subconsulta cumplen con la condición.
+
+Por tanto, `ALL` significa que la condición será verdadera solo si la operación es verdadera para **todos** los valores en el rango.
+
+```sql
+-- Syntax con SELECT
+SELECT ALL column_name(s) 
+FROM table_name 
+WHERE condition;
+
+-- Syntax con WHERE o HAVING
+SELECT column_name(s) 
+FROM table_name 
+WHERE column_name operator ALL 
+  (SELECT column_name FROM table_name WHERE condition);
+```
+
+El operador debe ser un **operador de comparación estándar** (=, <>, !=, >, >=, < o <=).
+
+```sql
+-- Muestra los nombres de productos cuyo ProductID coincide con todos los ProductID de OrderDetails con cantidad 10
+SELECT ProductName 
+FROM Products
+WHERE ProductID = ALL (SELECT ProductID FROM OrderDetails WHERE Quantity = 10);
+```
+
+### Select Into
+
+La sentencia `SELECT INTO` copia datos de una tabla a una **nueva tabla**.
+
+La nueva tabla se creará con los nombres de columna y tipos tal como están definidos en la tabla original. Se puede crear nuevos nombres de columna usando la cláusula `AS`.
+
+```sql
+-- Copy all columns into a new table
+SELECT *
+INTO newtable [IN externaldb]
+FROM oldtable
+WHERE condition;
+
+-- Copy only some columns into a new table
+SELECT column1, column2, column3, ...
+INTO newtable [IN externaldb]
+FROM oldtable
+WHERE condition;
+```
+
+> En **MySQL**, el comando `SELECT INTO` no es compatible para crear nuevas tablas. En su lugar, se debe usar la sintaxis `CREATE TABLE ... AS SELECT ...`. **PostgreSQL**, **Microsoft SQL Server** y **SQLite** son compatibles con `SELECT INTO` para crear tablas nuevas. En **Oracle**, `SELECT INTO` se usa en el contexto de **PL/SQL** para almacenar resultados en variables, mientras que para crear tablas también se utiliza `CREATE TABLE ... AS SELECT ...`.
+
+Aunque no se utiliza normalemente, se puede usar `SELECT INTO` para crear una nueva tabla vacía basada en la estructura de otra tabla. Solo se necesita añadir una cláusula `WHERE` que haga que la consulta no devuelva datos:
+
+```sql
+SELECT *
+INTO nueva_tabla
+FROM tabla_original
+WHERE FALSE; -- No devuelve datos, pero crea la estructura de la tabla.
+```
+
+### Insert Into Select
+
+La declaración `INSERT INTO SELECT` se utiliza para **copiar datos de una tabla e insertarlos en otra tabla**.
+
+Es importante destacar que esta declaración requiere que los **tipos de datos coincidan** en las tablas de origen y destino.
+
+Los registros existentes en la tabla de destino no se ven afectados por la operación de inserción, ya que los datos se agregan como nuevos registros, no se reemplazan ni se actualizan los existentes.
+
+```sql
+-- Copy all columns from one table to another table
+INSERT INTO tabla_destino
+SELECT * FROM tabla_origen
+WHERE condition;
+
+-- Copy only some columns from one table into another table
+INSERT INTO tabla_destino (column1, column2, column3, ...)
+SELECT column1, column2, column3, ...
+FROM tabla_origen
+WHERE condition;
+```
+
+### Case
+
+La expresión `CASE` evalúa una serie de condiciones y devuelve un valor cuando se cumple la primera condición (similar a una sentencia `if-then-else`).
+
+Una vez que una condición es verdadera, deja de evaluar y devuelve el resultado correspondiente. Si ninguna de las condiciones es verdadera, devuelve el valor de la cláusula `ELSE`.
+
+Si no hay una parte `ELSE` y ninguna de las condiciones es verdadera, devuelve `NULL`.
+
+```sql
+SELECT 
+  CASE 
+    WHEN condition1 THEN result1
+    WHEN condition2 THEN result2
+    WHEN conditionN THEN resultN
+    ELSE result
+  END
+FROM table_name;
+```
+
+En este ejemplo, la expresión `CASE` revisa el valor de _Quantity_ y devuelve el estado del inventario según corresponda:
+
+```sql
+SELECT 
+  ProductName, 
+  CASE 
+    WHEN Quantity > 50 THEN 'In stock'
+    WHEN Quantity <= 50 AND Quantity > 0 THEN 'Low stock'
+    ELSE 'Out of stock'
+  END AS StockStatus
+FROM Products;
+```
+
+### Null Functions
+
+#### COALESCE(...)
+
+La función `COALESCE(expression1, expression2, ..., expressionN)` devuelve el primer valor no `NULL` de una lista de expresiones que se evaluarán en orden:
+
+```sql
+-- Si 'Discount' es 'NULL', se evalúa 'Tax'. Si también es 'NULL', se devuelve 0
+SELECT ProductName, COALESCE(Discount, Tax, 0) AS DiscountOrTax FROM Products;
+```
+
+La función `COALESCE(...)` es parte del **estándar SQL**, por lo que está disponible en la mayoría de los sistemas de gestión de bases de datos, incluidos **MySQL, Microsoft SQL Server, PostgreSQL y Oracle**. Por tanto, suele ser la mejor opción.
+
+#### IFNULL(...)
+
+La función `IFNULL(expression, alt_value)` de MySQL permite devolver un valor alternativo si una expresión es `NULL`:
+
+```sql
+-- Si 'Discount' es 'NULL', se devolverá 0
+SELECT ProductName, IFNULL(Discount, 0) AS Discount FROM Products;
+```
+
+> `IFNULL(...)` es específica de **MySQL**, por lo que si se trabaja en otros SGBD, es recomendable considerar usar `COALESCE(...)` para mayor compatibilidad.
+
+#### ISNULL(...)
+
+La función `ISNULL(expression, alt_value)` de Microsoft SQL Server permite devolver un valor alternativo si una expresión es `NULL`:
+
+```sql
+-- Si 'Discount' es 'NULL', se devolverá 0
+SELECT ProductName, ISNULL(Discount, 0) AS Discount FROM Products;
+```
+
+> `ISNULL(...)` es específica de **Microsoft SQL Server**, por lo que si se trabaja en otros SGBD, es recomendable considerar usar `COALESCE(...)` para mayor compatibilidad.
+
+#### NVL(...)
+
+La función `NVL(expression, alt_value)` de Oracle SQL permite devolver un valor alternativo si una expresión es `NULL`:
+
+```sql
+-- Si 'Discount' es 'NULL', se devolverá 0
+SELECT ProductName, NVL(Discount, 0) AS Discount FROM Products;
+```
+
+> `NVL(...)` es específica de **Oracle SQL**, por lo que si se trabaja en otros SGBD, es recomendable considerar usar `COALESCE(...)` para mayor compatibilidad.
+
+### Stored Procedures
+
+Un **procedimiento almacenado o _Stored Procedure_** es un código SQL preparado que se puede guardar para que se pueda reutilizar una y otra vez.
+
+Cuando se tiene una consulta SQL que se escribe repetidamente, se guarda como un procedimiento almacenado y luego solo se tiene que invocar para ser ejecutado.
+
+También se pueden pasar parámetros a un procedimiento almacenado, de modo que el procedimiento pueda actuar en función de los valores de los parámetros que se le pasen.
+
+#### Microsoft SQL Server
+
+En [Microsoft SQL Server](https://learn.microsoft.com/en-us/sql/relational-databases/stored-procedures/stored-procedures-database-engine), la sintaxis para crear un procedimiento almacenado es la siguiente:
+
+```sql
+CREATE PROCEDURE procedure_name
+AS
+sql_statement
+GO;
+```
+
+Para invocar un procedimiento almacenado, usamos el comando `EXEC`:
+
+```sql
+EXEC procedure_name;
+```
+
+#### MySQL
+
+En [MySQL](https://dev.mysql.com/doc/refman/9.0/en/stored-objects.html), la sintaxis es diferente, y se usa `DELIMITER` para cambiar el delimitador cuando se crea un procedimiento:
+
+```sql
+DELIMITER //
+CREATE PROCEDURE procedure_name()
+BEGIN
+    sql_statement;
+END //
+DELIMITER ;
+```
+
+Para invocar el procedimiento en MySQL, se usa `CALL` simplemente:
+
+```sql
+CALL procedure_name();
+```
+
+#### PostgreSQL
+
+En [PostgreSQL](https://www.postgresql.org/docs/current/plpgsql.html), los procedimientos almacenados se definen como funciones, utilizando el lenguaje **_PL/pgSQL (Procedural Language/PostgreSQL SQL)_**:
+
+```sql
+CREATE OR REPLACE FUNCTION procedure_name()
+RETURNS void AS $$
+BEGIN
+    sql_statement;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+Para invocar el procedimiento se utiliza `SELECT`:
+
+```sql
+SELECT procedure_name();
+```
+
+#### Oracle
+
+En [Oracle](https://docs.oracle.com/en/database/oracle/oracle-database/21/lnpls/overview.htm) se utiliza **_PL/SQL (Procedural Language/Structured Query Language)_** cuya sintaxis para la creación de un procedimiento es la siguiente:
+
+```sql
+CREATE PROCEDURE procedure_name
+IS
+BEGIN
+    sql_statement;
+END procedure_name;
+```
+
+Para invocar el procedimiento en Oracle se utiliza `EXEC`:
+
+```sql
+EXEC procedure_name;
+```
+
+### Comments
+
+Los comentarios de una sola línea comienzan con `--`.
+
+Cualquier texto entre `--` y el final de la línea será ignorado (no se ejecutará).
+
+```sql
+-- Single line comment
+SELECT * FROM Customers;
+
+-- Single-line comment to ignore the end of a line
+SELECT * FROM Customers -- WHERE City='Berlin';
+```
+
+Los comentarios de varias líneas comienzan con `/*` y terminan con `*/`.
+
+Cualquier texto entre `/*` y `*/` será ignorado.
+
+```sql
+/*Select all the columns
+of all the records
+in the Customers table:*/
+SELECT * FROM Customers;
+
+-- To ignore just a part of a statement, also use the /* */ comment
+SELECT CustomerName, /*City,*/ Country FROM Customers;
+```
+
 ### Data Types
 
 - [MySQL](https://dev.mysql.com/doc/refman/9.1/en/data-types.html)
@@ -1333,11 +1775,11 @@ docker ps
 
 - `--name mysql-container`: Nombre del contenedor.
 
-- `-e MYSQL_ROOT_PASSWORD=tu_contraseña`: Establece la contraseña para el usuario root.
+- `-e MYSQL_ROOT_PASSWORD=tu_contraseña`: Establece la contraseña para el usuario _root_.
 
-- `-e MYSQL_DATABASE=mi_base_de_datos`: Crea una base de datos inicial llamada mi_base_de_datos.
+- `-e MYSQL_DATABASE=mi_base_de_datos`: Crea una base de datos inicial llamada _mi_base_de_datos_.
 
-- `-v mysql_data:/var/lib/mysql`: Crea un volumen llamado mysql_data para persistir los datos.
+- `-v mysql_data:/var/lib/mysql`: Crea un volumen llamado _mysql_data_ para persistir los datos.
 
 - `-p 3306:3306`: Expone el puerto 3306 (puerto predeterminado de MySQL) para conectarte desde tu máquina.
 
@@ -1361,9 +1803,9 @@ docker exec -it mysql-container mysql -uroot -p
 
 - `mysql`: Llama al cliente de MySQL.
 
-- `-uroot`: Especifica que te conectas con el usuario root.
+- `-uroot`: Especifica que te conectas con el usuario _root_.
 
-- `-p`: Te pedirá que ingreses la contraseña del usuario root (la que configuraste al crear el contenedor).
+- `-p`: Te pedirá que ingreses la contraseña del usuario _root_ (la que configuraste al crear el contenedor).
 
 #### Reiniciar y parar el contenedor
 
@@ -1385,11 +1827,11 @@ docker run --name postgres-container -e POSTGRES_PASSWORD=tu_contraseña -e POST
 
 - `--name postgres-container`: Nombre del contenedor.
 
-- `-e POSTGRES_PASSWORD=tu_contraseña`: Establece la contraseña para el usuario postgres.
+- `-e POSTGRES_PASSWORD=tu_contraseña`: Establece la contraseña para el usuario _postgres_.
 
-- `-e POSTGRES_DB=mi_base_de_datos`: Crea una base de datos inicial llamada mi_base_de_datos.
+- `-e POSTGRES_DB=mi_base_de_datos`: Crea una base de datos inicial llamada _mi_base_de_datos_.
 
-- `-v postgres_data:/var/lib/postgresql/data`: Crea un volumen llamado postgres_data para persistir los datos.
+- `-v postgres_data:/var/lib/postgresql/data`: Crea un volumen llamado _postgres_data_ para persistir los datos.
 
 - `-p 5432:5432`: Expone el puerto 5432 (puerto predeterminado de PostgreSQL) para conectarte desde tu máquina.
 

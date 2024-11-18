@@ -1757,6 +1757,76 @@ SELECT CustomerName, /*City,*/ Country FROM Customers;
 
 - [Oracle Database](https://docs.oracle.com/en/database/oracle/oracle-database/21/sqlrf/Functions.html)
 
+## SQL Database
+
+### Create DB
+
+La sentencia `CREATE DATABASE` se utiliza para crear una nueva base de datos SQL.
+
+```sql
+CREATE DATABASE databasename;
+```
+
+Una vez creada, puedes verificarla en la lista de bases de datos con el siguiente comando SQL:  
+
+```sql
+SHOW DATABASES;
+```
+
+### Drop DB
+
+La sentencia `DROP DATABASE` se utiliza para eliminar una base de datos SQL existente.
+
+```sql
+DROP DATABASE databasename;
+```
+
+### Create Table
+
+La instrucción `CREATE TABLE` se utiliza para crear una nueva tabla en una base de datos.
+
+```sql
+CREATE TABLE table_name (
+    column1 datatype,
+    column2 datatype,
+    column3 datatype,
+   ....
+);
+```
+
+Los parámetros de columna especifican los nombres de las columnas de la tabla.
+
+El parámetro de tipo de dato especifica el [tipo de datos](#data-types) que la columna puede contener (por ejemplo, `varchar`, `integer`, `date`, etc.).
+
+También se puede crear una copia de una tabla existente utilizando `CREATE TABLE`. La nueva tabla tendrá las mismas definiciones de columnas. Se pueden seleccionar todas las columnas o columnas específicas.
+
+Si se crea una nueva tabla a partir de una tabla existente, la nueva tabla se llenará con los valores existentes de la tabla original.
+
+```sql
+CREATE TABLE new_table_name AS
+    SELECT column1, column2,...
+    FROM existing_table_name
+    WHERE ....;
+```
+
+### Drop Table
+
+La instrucción `DROP TABLE` se utiliza para eliminar una tabla existente en una base de datos. Eliminar una tabla resultará en la pérdida completa de toda la información almacenada en ella.
+
+```sql
+DROP TABLE table_name;
+```
+
+La instrucción `TRUNCATE TABLE` se utiliza para eliminar los datos dentro de una tabla, pero no la tabla en sí.
+
+```sql
+TRUNCATE TABLE table_name;
+```
+
+### Alter Table
+
+TODO
+
 ---
 
 ## Práctica

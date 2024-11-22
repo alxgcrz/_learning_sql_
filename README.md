@@ -1297,11 +1297,58 @@ WHERE c.CustomerName='Around the Horn' AND c.CustomerID=o.CustomerID;
 
 ### Joins
 
-TODO
+Una cláusula `JOIN` se utiliza para combinar filas de dos o más tablas, basándose en una columna relacionada entre ellas.
+
+Aquí están los diferentes tipos de `JOIN` en SQL:  
+
+- **`(INNER) JOIN`**: Devuelve los registros que tienen valores coincidentes en ambas tablas.
+
+![ ](assets/inner_join.png)
+
+- **`LEFT (OUTER) JOIN`**: Devuelve todos los registros de la tabla izquierda y los registros coincidentes de la tabla derecha.
+
+![ ](assets/left_join.png)
+
+- **`RIGHT (OUTER) JOIN`**: Devuelve todos los registros de la tabla derecha y los registros coincidentes de la tabla izquierda.
+
+![ ](assets/right_join.png)
+
+- **`FULL (OUTER) JOIN`**: Devuelve todos los registros cuando hay una coincidencia en la tabla izquierda o en la tabla derecha.  
+
+![ ](assets/full_outer_join.png)
 
 ### Inner Join
 
-TODO
+La palabra clave `INNER JOIN` selecciona los registros que tienen **valores coincidentes en ambas tablas**.
+
+```sql
+SELECT column_name(s)
+FROM table1
+INNER JOIN table2
+ON table1.column_name = table2.column_name;
+```
+
+![ ](assets/inner_join.png)
+
+Dadas las tablas `Products` y `Categories`, la siguiente consulta utiliza un `INNER JOIN` para **combinar los datos de ambas tablas**. La consulta selecciona los productos que tienen categoría, es decir, aquellos que tienen una categoría asociada a la tabla `Categories`.
+
+Si un producto no tiene un `CategoryID` o si el `CategoryID` no coincide con ningún valor en la tabla `Categories`, ese producto no será incluido en el resultado.
+
+```sql
+SELECT ProductID, ProductName, CategoryName
+FROM Products
+INNER JOIN Categories ON Products.CategoryID = Categories.CategoryID;
+```
+
+Es una buena práctica incluir el nombre de la tabla al especificar las columnas en la instrucción SQL, salvo cuando un campo tiene **el mismo nombre** en ambas tablas y además se incluye en la consulta. En ese caso, para evitar ambigüedades, se debe especificar de forma explícita el nombre de la tabla o el alias de la tabla para cada columna, utilizando la notación `Tabla.Columna`:
+
+```sql
+SELECT Products.ProductID, Products.ProductName, Categories.CategoryName
+FROM Products
+INNER JOIN Categories ON Products.CategoryID = Categories.CategoryID;
+```
+
+`JOIN` e `INNER JOIN` devolverán el mismo resultado ya que `INNER` es el **tipo por defecto** de `JOIN`.
 
 ### Left Join
 

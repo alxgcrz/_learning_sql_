@@ -1350,21 +1350,136 @@ INNER JOIN Categories ON Products.CategoryID = Categories.CategoryID;
 
 `JOIN` e `INNER JOIN` devolverán el mismo resultado ya que `INNER` es el **tipo por defecto** de `JOIN`.
 
+Es posible utilizar un `INNER JOIN` para trabajar con **tres o más tablas**. Esto se logra combinando cada tabla adicional con la anterior mediante las condiciones de unión necesarias.
+
+```sql
+-- Selecciona las órdenes junto con los nombres de los clientes y los nombres de los productos
+SELECT Orders.OrderID, Customers.CustomerName, Products.ProductName
+FROM Orders
+INNER JOIN Customers ON Orders.CustomerID = Customers.CustomerID
+INNER JOIN Products ON Orders.ProductID = Products.ProductID;
+```
+
 ### Left Join
 
-TODO
+La palabra clave `LEFT JOIN` devuelve todos los registros de la tabla izquierda y los registros coincidentes de la tabla derecha. Si no hay coincidencia, el resultado incluirá 0 registros del lado derecho.
+
+```sql
+SELECT column_name(s)
+FROM table1
+LEFT JOIN table2
+ON table1.column_name = table2.column_name;
+```
+
+![ ](assets/left_join.png)
+
+En algunas bases de datos, `LEFT JOIN` se denomina `LEFT OUTER JOIN`.
+
+En los cuatro principales SGBD (_MySQL, PostgreSQL, SQL Server y Oracle_), se puede usar tanto `LEFT JOIN` como `LEFT OUTER JOIN`, ya que ambas formas producen exactamente el **mismo resultado**. La palabra `OUTER` es opcional, ya que no cambia el comportamiento del comando. Estos SGBD admiten ambas formas como parte del estándar SQL.
+
+```sql
+SELECT Customers.CustomerName, Orders.OrderID
+FROM Customers
+LEFT JOIN Orders ON Customers.CustomerID = Orders.CustomerID
+ORDER BY Customers.CustomerName;
+```
+
+Dadas las tablas `Orders` y `Customers`, con la relación garantizada por una clave foránea (`Orders.CustomerID` referencia a `Customers.CustomerID`), la siguiente consulta selecciona todas las órdenes realizadas, junto con la información del cliente asociado. Como la clave foránea asegura que siempre hay un cliente asociado a cada pedido, todos los campos de la tabla `Customers` estarán presentes.
+
+```sql
+SELECT Orders.OrderID, Orders.OrderDate, Customers.CustomerName
+FROM Orders
+LEFT JOIN Customers ON Orders.CustomerID = Customers.CustomerID;
+```
+
+En la práctica, `LEFT JOIN` suele utilizarse con más frecuencia que `RIGHT JOIN`. Esto se debe a que la tabla que colocamos a la izquierda (tabla 1) suele ser la que centra el análisis o aquello que queremos averiguar.
+
+Al priorizar esa tabla, `LEFT JOIN` resulta más intuitivo y directo para resolver la mayoría de las preguntas. Aunque `RIGHT JOIN` puede producir los mismos resultados invirtiendo las tablas, `LEFT JOIN` suele ser la elección más común en diseños y consultas reales.
 
 ### Right Join
 
-TODO
+La palabra clave `RIGHT JOIN` devuelve todos los registros de la tabla derecha y los registros coincidentes de la tabla izquierda. Si no hay coincidencia, el resultado incluirá 0 registros del lado izquierdo.
+
+```sql
+SELECT column_name(s)
+FROM table1
+RIGHT JOIN table2
+ON table1.column_name = table2.column_name;
+```
+
+![ ](assets/right_join.png)
+
+Al igual que antes, en los cuatro principales SGBD (_MySQL, PostgreSQL, SQL Server y Oracle_), se puede usar tanto `RIGHT JOIN` como `RIGHT OUTER JOIN`, ya que ambas formas producen exactamente el **mismo resultado**. La palabra `OUTER` es opcional, ya que no cambia el comportamiento del comando. Estos SGBD admiten ambas formas como parte del estándar SQL.
+
+Dadas las mismas tablas, la siguiente consulta selecciona todos los clientes, incluyendo aquellos que no hayan realizado ningún pedido. Para los clientes sin órdenes, los campos correspondientes a los pedidos aparecerán como `NULL`. Este caso es útil si necesitas ver todos los clientes, destacando quiénes no han realizado compras todavía.
+
+```sql
+SELECT Customers.CustomerName, Orders.OrderID, Orders.OrderDate
+FROM Orders
+RIGHT JOIN Customers ON Orders.CustomerID = Customers.CustomerID;
+```
 
 ### Full Join
 
-TODO
+La palabra clave `FULL JOIN` devuelve todos los registros cuando hay una coincidencia en los registros de la tabla izquierda o de la tabla derecha.
+
+En los cuatro principales SGBD (_MySQL, PostgreSQL, SQL Server y Oracle_), se puede usar tanto `FULL JOIN` como `FULL OUTER JOIN`, ya que ambas formas producen exactamente el **mismo resultado**. La palabra `OUTER` es opcional, ya que no cambia el comportamiento del comando. Estos SGBD admiten ambas formas como parte del estándar SQL.
+
+```sql
+SELECT column_name(s)
+FROM table1
+FULL JOIN table2
+ON table1.column_name = table2.column_name
+WHERE condition;
+```
+
+![ ](assets/full_outer_join.png)
+
+Un `FULL JOIN` es útil cuando se necesita analizar todos los datos posibles de ambas tablas, incluyendo los registros que no tienen coincidencias en la otra tabla.
+
+Por ejemplo, dada una relación entre clientes y pedidos:
+
+```sql
+SELECT Customers.CustomerName, Orders.OrderID, Orders.OrderDate
+FROM Customers
+FULL JOIN Orders ON Customers.CustomerID = Orders.CustomerID;
+```
+
+- Los clientes sin pedidos tendrán sus columnas de pedidos (`OrderID`, `OrderDate`) en NULL.
+
+- Los pedidos sin cliente asociado (si los hubiera) tendrán sus columnas de clientes (`CustomerName`) en NULL.
+
+> Un `FULL JOIN` combina el resultado de un `LEFT JOIN` y un `RIGHT JOIN`, pero sin duplicar los registros que coinciden en ambas tablas.
 
 ### Self Join
 
-TODO
+Un `SELF JOIN` es un tipo de unión regular en la que una tabla se une consigo misma.
+
+Esto puede parecer inusual, pero es útil en situaciones donde los datos de una fila están relacionados con los datos de otra fila en la misma tabla.
+
+Para realizar un `SELF JOIN`, se utilizan alias de tabla para diferenciar entre la "versión izquierda" y la "versión derecha" de la tabla. Sin los alias, la consulta generaría un error porque el SGBD no sabría distinguir entre las dos "copias" de la tabla. Los alias son, por tanto, **indispensables** en cualquier `SELF JOIN`.
+
+```sql
+SELECT column_name(s)
+FROM table1 AS T1, table1 AS T2
+WHERE condition;
+```
+
+Por ejemplo, considera una tabla de empleados donde cada empleado tiene un `EmployeeID` y un `ManagerID` que indica quién es su gerente. Si quieres obtener una lista de empleados junto con el nombre de su gerente, se puede usar un `SELF JOIN`:
+
+```sql
+SELECT A.EmployeeName AS Employee, B.EmployeeName AS Manager
+FROM Employees A
+LEFT JOIN Employees B ON A.ManagerID = B.EmployeeID;
+```
+
+Un `SELF JOIN` es útil en casos como:
+
+- Jerarquías, como empleados y gerentes, o categorías principales y subcategorías.
+
+- Relaciones reflexivas, como conexiones entre nodos en un grafo o una red.
+
+> Aunque un `SELF JOIN` utiliza únicamente una tabla, técnicamente sigue siendo un `JOIN`, ya que el SGBD combina datos de diferentes 'instancias' de esa misma tabla.
 
 ### Union
 

@@ -1453,7 +1453,7 @@ FULL JOIN Orders ON Customers.CustomerID = Orders.CustomerID;
 
 ### Self Join
 
-Un `SELF JOIN` es un tipo de unión regular en la que una tabla se une consigo misma.
+Un `SELF JOIN` es un tipo de unión regular en la que una tabla se une **consigo misma**.
 
 Esto puede parecer inusual, pero es útil en situaciones donde los datos de una fila están relacionados con los datos de otra fila en la misma tabla.
 
@@ -1479,7 +1479,7 @@ Un `SELF JOIN` es útil en casos como:
 
 - Relaciones reflexivas, como conexiones entre nodos en un grafo o una red.
 
-> Aunque un `SELF JOIN` utiliza únicamente una tabla, técnicamente sigue siendo un `JOIN`, ya que el SGBD combina datos de diferentes 'instancias' de esa misma tabla.
+> Aunque un `SELF JOIN` utiliza únicamente una tabla, técnicamente sigue siendo un `JOIN`, ya que el SGBD **combina datos de diferentes 'instancias'** de esa misma tabla.
 
 ### Union
 
@@ -1986,6 +1986,193 @@ TRUNCATE TABLE table_name;
 ```
 
 ### Alter Table
+
+La instrucción `ALTER TABLE` se utiliza para agregar, eliminar o modificar columnas en una tabla existente.  
+
+La instrucción `ALTER TABLE` también se usa para añadir y eliminar diversas restricciones en una tabla existente.
+
+#### Add Column
+
+Para agregar una columna en una tabla, se utiliza la siguiente sintaxis:
+
+```sql
+ALTER TABLE table_name
+ADD column_name datatype;
+```
+
+> Cada SGBD tiene diferentes [tipos de datos](#data-types).
+
+#### Drop Column
+
+Para eliminar una columna en una tabla, se utiliza la siguiente sintaxis:
+
+```sql
+ALTER TABLE table_name
+DROP COLUMN column_name;
+```
+
+En **Oracle**, existe la opción de marcar una columna como **_'unused'_** en lugar de eliminarla inmediatamente. Esto significa que la columna permanece **físicamente** en la tabla pero ya **no es accesible ni visible** en las consultas.
+
+```sql
+-- Marca la columna como no utilizada.
+ALTER TABLE table_name SET UNUSED COLUMN column_name;
+```
+
+Más adelante, se pueden eliminar todas las columans marcadas como **_unused_** de forma definitiva con el comando:
+
+```sql
+-- Elimina físicamente todas las columnas marcadas como no utilizadas.
+ALTER TABLE table_name DROP UNUSED COLUMNS
+```
+
+Esta característica es exclusiva de Oracle y resulta especialmente útil en entornos donde el tiempo de inactividad o el impacto en el rendimiento son críticos.
+
+#### Rename Column
+
+Para cambiar el nombre de una columna de una tabla, se utiliza la siguiente sintaxis:
+
+```sql
+ALTER TABLE table_name
+RENAME COLUMN old_name to new_name;
+```
+
+#### Alter/modify DataType
+
+No existe una única sintaxis estándar en SQL para cambiar el [tipo de datos](#data-types) de una columna. Aunque muy similar, cada SGBD tiene una sintaxis particular:
+
+- **_MySQL Syntax:_**
+
+```sql
+ALTER TABLE table_name
+MODIFY COLUMN column_name new_data_type;
+```
+
+- **_PostgreSQL Syntax:_**
+
+```sql
+ALTER TABLE table_name
+ALTER COLUMN column_name SET DATA TYPE new_data_type;
+```
+
+- **_SQL Server Syntax:_**
+
+```sql
+ALTER TABLE table_name
+ALTER COLUMN column_name new_data_type;
+```
+
+- **_Oracle Syntax:_**
+
+```sql
+ALTER TABLE table_name
+MODIFY column_name new_data_type;
+```
+
+> Cambiar el tipo de datos de una columna puede implicar que se **pierdan datos** si el tipo no es compatible o si los valores actuales no se ajustan al nuevo tipo
+
+### Constraints
+
+Las **_"constraints"_** o restricciones en SQL son **reglas** que se aplican a las columnas de una tabla para asegurar la integridad de los datos.
+
+- **`PRIMARY KEY`**: Asegura unicidad y no permite nulos.
+
+- **`FOREIGN KEY`**: Garantiza la integridad referencial entre tablas.
+
+- **`UNIQUE`**: Asegura que los valores sean únicos.
+
+- **`CHECK`**: Valida que los valores cumplan con una condición.
+
+- **`NOT NULL`**: Asegura que la columna no contenga valores nulos.
+
+- **`DEFAULT`**: Define un valor predeterminado para la columna.
+
+#### PRIMARY KEY
+
+- Define una columna (o combinación de columnas) que identifica de **manera única** cada fila de la tabla.
+
+- No permite valores nulos y debe ser única.
+
+- Solo puede haber una `PRIMARY KEY` por tabla.
+
+```sql
+CREATE TABLE Users (
+  UserID INT PRIMARY KEY,
+  UserName VARCHAR(100)
+);
+```
+
+#### FOREIGN KEY
+
+- Define una columna (o combinación de columnas) que se refiere a la `PRIMARY KEY` de otra tabla.
+
+- Garantiza la integridad referencial, es decir, que los valores en la columna de clave externa coincidan con los valores de la tabla referenciada.
+
+```sql
+CREATE TABLE Orders (
+  OrderID INT PRIMARY KEY,
+  UserID INT,
+  FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+```
+
+#### UNIQUE
+
+- Garantiza que todos los valores en una columna (o combinación de columnas) sean únicos, es decir, no se repitan.
+
+- A diferencia de `PRIMARY KEY`, los valores pueden ser nulos (si se permiten nulos en la columna).
+
+- Una `PRIMARY KEY` automáticamente implica una restricción `UNIQUE`.
+
+```sql
+CREATE TABLE Employees (
+  EmployeeID INT,
+  Email VARCHAR(100) UNIQUE
+);
+```
+
+#### CHECK
+
+- Permite definir una condición para que los valores de una columna cumplan con un criterio específico.
+
+- Asegura que los valores insertados o actualizados en una columna sean válidos según la condición especificada.
+
+```sql
+CREATE TABLE Products (
+  ProductID INT PRIMARY KEY,
+  Price DECIMAL(10, 2),
+  CHECK (Price >= 0)  -- La condición de que el precio no puede ser negativo
+);
+```
+
+#### NOT NULL
+
+- Define que una columna no puede contener valores nulos, ya que por defecto una columna puede contener valores nulos.
+
+- Es comúnmente utilizada en combinación con `PRIMARY KEY` o `UNIQUE` para garantizar que cada registro tenga un valor válido.
+
+```sql
+CREATE TABLE Customers (
+  CustomerID INT NOT NULL,
+  CustomerName VARCHAR(100) NOT NULL
+);
+```
+
+#### DEFAULT
+
+Establece un valor predeterminado para una columna cuando no se proporciona un valor explícito al insertar un registro.
+
+```sql
+CREATE TABLE Orders (
+  OrderID INT PRIMARY KEY,
+  OrderDate DATE DEFAULT CURRENT_DATE
+);
+```
+
+### Create Index
+
+TODO
+
+### Auto Increment
 
 TODO
 

@@ -2092,13 +2092,56 @@ Las **_"constraints"_** o restricciones en SQL son **reglas** que se aplican a l
 
 - No permite valores nulos y debe ser única.
 
-- Solo puede haber una `PRIMARY KEY` por tabla.
+- Solo puede haber una `PRIMARY KEY` por tabla. Esta clave puede consistir en un campo de columna o varios campos en varias columnas.
 
 ```sql
+-- Clave simple
 CREATE TABLE Users (
-  UserID INT PRIMARY KEY,
+  UserID INT PRIMARY KEY,  -- Se define en la misma línea
   UserName VARCHAR(100)
 );
+
+-- Clave compuesta
+CREATE TABLE Orders (
+  OrderID INT,
+  CustomerID INT,
+  OrderDate DATE,
+  PRIMARY KEY (OrderID, CustomerID)  -- Definición al final
+);
+```
+
+Algunos SGBD permiten **nombrar explícitamente** la restricción de clave primaria para mayor control:
+
+```sql
+CREATE TABLE Customers (
+  CustomerID INT,
+  CustomerName VARCHAR(100),
+  CONSTRAINT PK_Customers PRIMARY KEY (CustomerID)  -- Nombrar la restricción
+);
+```
+
+Para crear una `PRIMARY KEY` después de que la tabla ya haya sido creada:
+
+```sql
+ALTER TABLE Customers
+ADD PRIMARY KEY (CustomerID);
+```
+
+Para permitir nombrar una restricción de `PRIMARY KEY` y para definir una restricción de `PRIMARY KEY` en múltiples columnas, se utiliza la siguiente sintaxis SQL:
+
+```sql
+ALTER TABLE Persons
+ADD CONSTRAINT PK_Person PRIMARY KEY (ID, LastName);
+```
+
+Para eliminar una `PRIMARY KEY` de una tabla:
+
+```sql
+ALTER TABLE Persons
+DROP PRIMARY KEY;
+
+ALTER TABLE Persons
+DROP CONSTRAINT PK_Person;
 ```
 
 #### FOREIGN KEY
@@ -2107,12 +2150,51 @@ CREATE TABLE Users (
 
 - Garantiza la integridad referencial, es decir, que los valores en la columna de clave externa coincidan con los valores de la tabla referenciada.
 
+- La tabla con la clave foránea se llama **tabla hija**, y la tabla con la clave primaria se llama **tabla referenciada o tabla padre**.
+
 ```sql
 CREATE TABLE Orders (
   OrderID INT PRIMARY KEY,
   UserID INT,
   FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
+```
+
+Para permitir nombrar una restricción de `FOREIGN KEY` y para definir una restricción de `FOREIGN KEY` en múltiples columnas, se utiliza la siguiente sintaxis SQL:
+
+```sql
+CREATE TABLE Orders (
+    OrderID int NOT NULL,
+    OrderNumber int NOT NULL,
+    PersonID int,
+    PRIMARY KEY (OrderID),
+    CONSTRAINT FK_PersonOrder FOREIGN KEY (PersonID) REFERENCES Persons(PersonID)
+);
+```
+
+Para crear una `FOREIGN KEY` después de que la tabla ya haya sido creada:
+
+```sql
+ALTER TABLE table_name
+ADD FOREIGN KEY (column_name) REFERENCES referenced_table(referenced_column);
+```
+
+Para permitir nombrar una restricción de `FOREIGN KEY` y para definir una restricción de `FOREIGN KEY` en múltiples columnas, se utiliza la siguiente sintaxis SQL:
+
+```sql
+ALTER TABLE table_name
+ADD CONSTRAINT constraint_name
+FOREIGN KEY (column_name) REFERENCES referenced_table(referenced_column);
+```
+
+Para eliminar una `FOREIGN KEY` de una tabla:
+
+```sql
+ALTER TABLE table_name
+DROP FOREIGN KEY constraint_name;
+
+ALTER TABLE table_name
+DROP CONSTRAINT constraint_name;
 ```
 
 #### UNIQUE
@@ -2132,9 +2214,11 @@ CREATE TABLE Employees (
 
 #### CHECK
 
-- Permite definir una condición para que los valores de una columna cumplan con un criterio específico.
+- Esta restricción se utiliza para **limitar el rango de valores** que se pueden asignar a una columna.
 
 - Asegura que los valores insertados o actualizados en una columna sean válidos según la condición especificada.
+
+- Se puede limitar los valores en ciertas columnas basándose en los valores de otras columnas de la misma fila.
 
 ```sql
 CREATE TABLE Products (
@@ -2142,6 +2226,76 @@ CREATE TABLE Products (
   Price DECIMAL(10, 2),
   CHECK (Price >= 0)  -- La condición de que el precio no puede ser negativo
 );
+```
+
+Para crear una **restricción sin nombre** se utiliza la siguiente sintaxis SQL:
+
+```sql
+-- SQL Server / Oracle / PostgreSQL / MySQL (8.0.16+)
+CREATE TABLE table_name (
+    column_name datatype,
+    CHECK (condition)
+);
+```
+
+Para crear una **restricción con un nombre explícito** se utiliza la siguiente sintaxis SQL:
+
+```sql
+-- SQL Server / Oracle / PostgreSQL / MySQL (8.0.16+)
+CREATE TABLE table_name (
+    column_name datatype,
+    CONSTRAINT constraint_name CHECK (condition)
+);
+```
+
+Para **añadir una restricción** después de que la tabla haya sido creada:
+
+```sql
+-- SQL Server / Oracle / PostgreSQL / MySQL (8.0.16+)
+ALTER TABLE table_name
+ADD CONSTRAINT constraint_name CHECK (condition);
+```
+
+Para **eliminar una restricción** después de que haya sido creada:
+
+```sql
+-- SQL Server / Oracle / PostgreSQL / MySQL (8.0.16+)
+ALTER TABLE table_name
+DROP CONSTRAINT constraint_name;
+```
+
+Ejemplos de condiciones en restriciones de tipo `CHECK`:
+
+```sql
+-- Comprobación de que el valor numérico es mayor que cero
+CHECK (column_name > 0);
+
+-- Comprobación de que el valor numérico está dentro de un rango específico
+CHECK (column_name BETWEEN 1 AND 100);
+
+-- Comprobación de que una columna de texto tiene una longitud mínima
+CHECK (LENGTH(column_name) >= 5);
+
+-- Comprobación de que una fecha no es anterior a la fecha actual
+CHECK (date_column >= CURRENT_DATE);
+
+-- Comprobación de que el valor de una columna de texto está en una lista de opciones válidas
+CHECK (column_name IN ('Option1', 'Option2', 'Option3'));
+
+-- Comprobación de que una cadena comienza con una letra mayúscula
+CHECK (column_name ~ '^[A-Z]');
+
+-- Comprobación de que el valor es no nulo y mayor que cero
+CHECK (column_name IS NOT NULL AND column_name > 0);
+
+-- Comprobación de que una fecha de nacimiento es mayor de 18 años respecto a la fecha actual
+CHECK (age_column <= CURRENT_DATE - INTERVAL '18 years');
+
+-- Comprobación de que el valor de una columna de texto es alfanumérico (sin espacios ni caracteres especiales)
+CHECK (column_name ~ '^[A-Za-z0-9]+$');
+
+-- Comprobación de que el valor de un salario esté dentro de un rango permitido
+CHECK (salary_column >= 30000 AND salary_column <= 150000);
 ```
 
 #### NOT NULL

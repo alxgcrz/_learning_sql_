@@ -2036,7 +2036,7 @@ ALTER TABLE table_name
 RENAME COLUMN old_name to new_name;
 ```
 
-#### Alter/modify DataType
+#### Alter/Modify DataType
 
 No existe una única sintaxis estándar en SQL para cambiar el [tipo de datos](#data-types) de una columna. Aunque muy similar, cada SGBD tiene una sintaxis particular:
 
@@ -2206,10 +2206,39 @@ DROP CONSTRAINT constraint_name;
 - Una `PRIMARY KEY` automáticamente implica una restricción `UNIQUE`.
 
 ```sql
-CREATE TABLE Employees (
-  EmployeeID INT,
-  Email VARCHAR(100) UNIQUE
+-- SQL Server / Oracle / PostgreSQL / MySQL
+CREATE TABLE table_name (
+  column_name datatype UNIQUE
 );
+```
+
+Para crear una **restricción con un nombre explícito** se utiliza la siguiente sintaxis SQL:
+
+```sql
+-- SQL Server / Oracle / PostgreSQL / MySQL
+ALTER TABLE table_name
+ADD CONSTRAINT constraint_name UNIQUE (column_name);
+```
+
+Para añadir una restrición sobre varias columnas, se utiliza la siguiente sintaxis SQL:
+
+```sql
+-- SQL Server / Oracle / PostgreSQL / MySQL
+ALTER TABLE table_name
+ADD CONSTRAINT constraint_name UNIQUE (column1, column2);
+```
+
+Para **eliminar una restricción** después de que haya sido creada:
+
+```sql
+-- MySQL
+ALTER TABLE table_name
+DROP INDEX constraint_name;
+
+-- SQL Server / Oracle / PostgreSQL
+ALTER TABLE table_name
+DROP CONSTRAINT constraint_name;
+
 ```
 
 #### CHECK
@@ -2305,10 +2334,42 @@ CHECK (salary_column >= 30000 AND salary_column <= 150000);
 - Es comúnmente utilizada en combinación con `PRIMARY KEY` o `UNIQUE` para garantizar que cada registro tenga un valor válido.
 
 ```sql
-CREATE TABLE Customers (
-  CustomerID INT NOT NULL,
-  CustomerName VARCHAR(100) NOT NULL
+-- SQL Server / Oracle / PostgreSQL / MySQL
+CREATE TABLE table_name (
+  column_name datatype NOT NULL
 );
+```
+
+Añadir una restricción `NOT NULL` a una columna existente:
+
+```sql
+-- MySQL / Oracle
+ALTER TABLE table_name
+MODIFY column_name datatype NOT NULL;
+
+-- PostgreSQL
+ALTER TABLE table_name
+ALTER COLUMN column_name SET NOT NULL;
+
+-- SQL Server
+ALTER TABLE table_name
+ALTER COLUMN column_name datatype NOT NULL;
+```
+
+Eliminar una restricción `NOT NULL`:
+
+```sql
+-- MySQL / Oracle
+ALTER TABLE table_name
+MODIFY column_name datatype NULL;
+
+-- PostgreSQL
+ALTER TABLE table_name
+ALTER COLUMN column_name DROP NOT NULL;
+
+-- SQL Server
+ALTER TABLE table_name
+ALTER COLUMN column_name datatype NULL;
 ```
 
 #### DEFAULT
@@ -2316,10 +2377,42 @@ CREATE TABLE Customers (
 Establece un valor predeterminado para una columna cuando no se proporciona un valor explícito al insertar un registro.
 
 ```sql
-CREATE TABLE Orders (
-  OrderID INT PRIMARY KEY,
-  OrderDate DATE DEFAULT CURRENT_DATE
+-- SQL Server / Oracle / PostgreSQL / MySQL
+CREATE TABLE table_name (
+    column_name datatype DEFAULT default_value
 );
+```
+
+Para **añadir una restricción** después de que la tabla haya sido creada:
+
+```sql
+-- Oracle / MySQL
+ALTER TABLE table_name
+MODIFY column_name datatype DEFAULT default_value;
+
+-- PostgreSQL
+ALTER TABLE table_name
+ALTER COLUMN column_name SET DEFAULT default_value;
+
+-- SQL Server
+ALTER TABLE table_name
+ADD CONSTRAINT constraint_name DEFAULT default_value FOR column_name;
+```
+
+Para **eliminar una restricción** después de que haya sido creada:
+
+```sql
+-- Oracle / MySQL
+ALTER TABLE table_name
+MODIFY column_name datatype;
+
+-- PostgreSQL
+ALTER TABLE table_name
+ALTER COLUMN column_name DROP DEFAULT;
+
+-- SQL Server
+ALTER TABLE table_name
+DROP CONSTRAINT constraint_name;
 ```
 
 ### Create Index

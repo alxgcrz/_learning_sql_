@@ -2415,9 +2415,41 @@ ALTER TABLE table_name
 DROP CONSTRAINT constraint_name;
 ```
 
-### Create Index
+### Index
 
-TODO
+La instrucción `CREATE INDEX` se utiliza para crear índices en las tablas.
+
+Los índices se emplean para recuperar datos de la base de datos de forma más rápida. Los usuarios no pueden ver los índices, ya que solo se utilizan para acelerar búsquedas o consultas.
+
+> Actualizar una tabla que tiene índices toma más tiempo que actualizar una tabla sin índices, ya que también **es necesario actualizar los índices**. Por ello, solo se deben crear índices en columnas que se consulten con frecuencia.
+
+```sql
+-- Oracle / MySQL / PostgreSQL / SQL Server
+CREATE INDEX index_name ON table_name (column1, column2, ...);
+```
+
+Los índices únicos **no permiten duplicados**:
+
+```sql
+-- Oracle / MySQL / PostgreSQL / SQL Server
+CREATE UNIQUE INDEX index_name ON table_name (column1, column2, ...);
+```
+
+Aunque un índice único evita duplicados, una restricción única (**UNIQUE CONSTRAINT**) es preferible si el propósito es garantizar la unicidad de los datos. Las restricciones forman parte de la definición del esquema de la tabla y se documentan mejor como reglas del negocio:
+
+```sql
+ALTER TABLE table_name ADD CONSTRAINT unique_constraint_name UNIQUE (column_name);
+```
+
+Para eliminar un índice, se usa la instrucción `DROP INDEX`:
+
+```sql
+-- Oracle / PostgreSQL
+DROP INDEX index_name;
+
+-- SQL Server / MySQL
+DROP INDEX index_name ON table_name;
+```
 
 ### Auto Increment
 
@@ -2427,7 +2459,7 @@ TODO
 
 ## Práctica
 
-### MySQL en Docker con persistencia
+### Ejecutando MySQL en un contenedor
 
 #### Creación del contenedor
 
@@ -2473,17 +2505,17 @@ docker exec -it mysql-container mysql -uroot -p
 
 - `-p`: Te pedirá que ingreses la contraseña del usuario _root_ (la que configuraste al crear el contenedor).
 
-#### Reiniciar y parar el contenedor
+#### Iniciar y parar el contenedor
 
 ```bash
-# Reiniciar el contenedor
+# Iniciar el contenedor
 docker start mysql-container
 
 # Parar el contenedor
 docker stop mysql-container
 ```
 
-### PostgreSQL en Docker con persistencia
+### Ejecutando PostgreSQL en un contenedor
 
 #### Creación del contenedor
 
@@ -2511,10 +2543,10 @@ Es posible conectarse al contenedor vía el cliente `psql` de PostgreSQL:
 docker exec -it postgres-container psql -U postgres
 ```
 
-#### Reiniciar y parar el contenedor
+#### Iniciar y parar el contenedor
 
 ```bash
-# Reiniciar el contenedor
+# Iniciar el contenedor
 docker start postgres-container
 
 # Parar el contenedor
@@ -2535,14 +2567,19 @@ docker stop postgres-container
 - <https://www.postgresql.org/docs/>
 - <https://wiki.postgresql.org/>
 - <https://cheatsheets.zip/postgres>
+- <https://www.pgadmin.org/>
 
 ### Microsoft SQL
 
 - <https://learn.microsoft.com/es-es/sql>
+- <https://mcr.microsoft.com/>
 
 ### Oracle SQL
 
 - <https://docs.oracle.com/en/database/oracle/oracle-database/index.html>
+- <https://container-registry.oracle.com/>
+- <https://hub.docker.com/r/gvenzl/oracle-xe>
+- <https://hub.docker.com/r/gvenzl/oracle-free>
 
 ### General
 
@@ -2556,6 +2593,7 @@ docker stop postgres-container
 - <https://sqlbolt.com/>
 - <https://bookdown.org/paranedagarcia/database/sql.html>
 - <https://gestionbasesdatos.readthedocs.io/es/latest/index.html>
+- <https://livesql.oracle.com/>
 
 ## Licencia
 

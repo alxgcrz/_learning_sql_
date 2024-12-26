@@ -2453,7 +2453,76 @@ DROP INDEX index_name ON table_name;
 
 ### Auto Increment
 
-TODO
+Los **campos autoincrementales** son columnas de una tabla que se incrementan **automáticamente** con cada nueva fila que se inserta. Esto es especialmente útil para generar valores únicos, como identificadores o claves primarias, sin necesidad de especificar manualmente un valor para esas columnas.
+
+- En [MySQL](https://dev.mysql.com/doc/refman/9.1/en/example-auto-increment.html), la palabra clave `AUTO_INCREMENT` indica que la columna se incrementará automáticamente. Se incrementa en 1 por cada nuevo registro y puede ser reiniciado manualmente:
+
+```sql
+-- MySQL
+CREATE TABLE table_name (
+    column_id INT AUTO_INCREMENT PRIMARY KEY,
+    column1 VARCHAR(50)
+);
+```
+
+Para cambiar el valor inicial se puede usar:
+
+```sql
+ALTER TABLE table_name AUTO_INCREMENT = 100;
+```
+
+- [PostgreSQL](https://www.postgresql.org/docs/17/datatype-numeric.html#DATATYPE-SERIAL) utiliza secuencias con la palabra clave `SMALLSERIAL`, `SERIAL` o `BIGSERIAL`. Es una secuencia interna que se incrementa automáticamente. `SERIAL` es un alias para `SERIAL4` (entero de 4 bytes), mientras que `BIGSERIAL` es un alias para `SERIAL8` (entero de 8 bytes):
+
+```sql
+-- PostgreSQL
+CREATE TABLE table_name (
+    column_id SERIAL PRIMARY KEY,
+    column1 VARCHAR(50)
+);
+```
+
+También se puede usar `GENERATED` para un [estándar SQL](https://www.postgresql.org/docs/current/ddl-identity-columns.html) más reciente:
+
+```sql
+-- PostgreSQL
+CREATE TABLE table_name (
+    column_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    column1 VARCHAR(50)
+);
+```
+
+- [SQL Server](https://learn.microsoft.com/en-us/sql/t-sql/statements/create-table-transact-sql-identity-property) utiliza `IDENTITY` para indicar que una columna es autoincremental. El primer número indica el valor inicial, y el segundo, el incremento:
+
+```sql
+-- SQL Server
+CREATE TABLE table_name (
+    column_id INT IDENTITY(1,1) PRIMARY KEY,
+    column1 NVARCHAR(50)
+);
+```
+
+- En **Oracle**, antes de la [versión 12c](https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/CREATE-SEQUENCE.html) no había soporte nativo. Se usaban secuencias y triggers:
+
+```sql
+-- Oracle
+CREATE SEQUENCE ejemplo_seq START WITH 1 INCREMENT BY 1;
+
+CREATE TABLE table_name (
+    column_id NUMBER PRIMARY KEY,
+    column1 VARCHAR2(50)
+);
+
+INSERT INTO ejemplo (id, nombre) VALUES (ejemplo_seq.NEXTVAL, 'John');
+```
+
+Desde [Oracle 12c](https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/CREATE-TABLE.html), se puede usar `GENERATED AS IDENTITY`:
+
+```sql
+CREATE TABLE table_name (
+    column_id NUMBER GENERATED AS IDENTITY PRIMARY KEY,
+    column1 VARCHAR2(50)
+);
+```
 
 ---
 
@@ -2560,6 +2629,7 @@ docker stop postgres-container
 ### MySQL
 
 - <https://dev.mysql.com/doc/>
+- <https://dev.mysql.com/doc/refman/9.1/en/>
 - <https://cheatsheets.zip/mysql>
 
 ### PostgreSQL
@@ -2577,6 +2647,7 @@ docker stop postgres-container
 ### Oracle SQL
 
 - <https://docs.oracle.com/en/database/oracle/oracle-database/index.html>
+- <https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/>
 - <https://container-registry.oracle.com/>
 - <https://hub.docker.com/r/gvenzl/oracle-xe>
 - <https://hub.docker.com/r/gvenzl/oracle-free>

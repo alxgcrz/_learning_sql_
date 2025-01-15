@@ -1,6 +1,6 @@
 # Lenguaje SQL
 
-> :warning: **EN DESARROLLO** :warning:
+> :warning: **DOCUMENTO EN DESARROLLO** :warning:
 
 ## Introducción
 
@@ -62,7 +62,7 @@ Las palabras clave SQL **no distinguen entre mayúsculas y minúsculas**. Por ej
 
 Algunos sistemas de bases de datos **requieren un punto y coma** (`;`) al final de cada instrucción SQL. Es la forma estándar de separar cada sentencia SQL en sistemas de bases de datos que permiten ejecutar **más de una sentencia SQL** en la misma llamada al servidor.
 
-> :warning: **Sección introductoria generada por ChatGPT**
+> :warning: **Sección introductoria generada por ChatGPT** :warning:
 
 ## Modelo relacional
 
@@ -942,7 +942,7 @@ DELETE FROM table_name WHERE condition;
 
 > Hay que tener **especial atención** al eliminar registros en una tabla. La cláusula `WHERE` especifica qué registro(s) deben ser eliminados. Si se omite la cláusula `WHERE`, ¡todos los registros en la tabla serán eliminados!
 
-### Filter
+### Limit
 
 Cuando trabajamos con bases de datos, a menudo necesitamos **limitar el número de registros** que una consulta `SELECT` devuelve. Esto es útil cuando solo queremos obtener una muestra de los datos o cuando estamos trabajando con tablas grandes y queremos optimizar el rendimiento.
 

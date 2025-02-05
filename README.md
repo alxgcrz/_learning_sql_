@@ -2624,37 +2624,25 @@ docker stop postgres-container
 
 ---
 
-## Referencias
+## Enlaces
 
-### MySQL
-
-- <https://dev.mysql.com/doc/>
-- <https://dev.mysql.com/doc/refman/9.1/en/>
-- <https://cheatsheets.zip/mysql>
-
-### PostgreSQL
-
-- <https://www.postgresql.org/docs/>
-- <https://wiki.postgresql.org/>
-- <https://cheatsheets.zip/postgres>
-- <https://www.pgadmin.org/>
-
-### Microsoft SQL
-
-- <https://learn.microsoft.com/es-es/sql>
-- <https://mcr.microsoft.com/>
-
-### Oracle SQL
-
-- <https://docs.oracle.com/en/database/oracle/oracle-database/index.html>
-- <https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/>
-- <https://container-registry.oracle.com/>
-- <https://hub.docker.com/r/gvenzl/oracle-xe>
-- <https://hub.docker.com/r/gvenzl/oracle-free>
-
-### General
+### SQL
 
 - <https://roadmap.sh/sql>
+- 👓 [Awesome - Databases](https://github.com/sindresorhus/awesome#databases)
+- [Apache CouchDB](https://couchdb.apache.org/)
+- 🧰 [DBeaver | Universal Database Tool](https://dbeaver.io/)
+- [Redis is an open source (BSD licensed), in-memory data structure store, used as a database, cache and message broker](https://redis.io/)
+- [RethinkDB: the open-source database for the realtime web](https://rethinkdb.com/)
+- [Titan: Distributed Graph Database](https://titan.thinkaurelius.com/)
+- [FoundationDB gives you the power of ACID transactions in a distributed database - From Apple](https://www.foundationdb.org/)
+- ⭐ [Cloud Firestore is a NoSQL document database that lets you easily store, sync, and query data for your mobile and web apps - at global scale](https://firebase.google.com/products/firestore/)
+- ⭐ [The Firebase Realtime Database is a cloud-hosted NoSQL database that lets you store and sync data between your users in realtime](https://firebase.google.com/products/realtime-database/)
+- [Flyway - Version control for your database](https://flywaydb.org/)
+- [HikariCP・A solid, high-performance, JDBC connection pool at last](https://github.com/brettwooldridge/HikariCP)
+
+### SQL - Learn
+
 - <https://www.w3schools.com/sql/default.asp>
 - <https://www.sqltutorial.org/>
 - <https://www.sqlitetutorial.net/>
@@ -2662,8 +2650,42 @@ docker stop postgres-container
 - <https://github.com/XD-DENG/SQL-exercise>
 - <https://www.sqlzoo.net/wiki/SQL_Tutorial>
 - <https://sqlbolt.com/>
+- <https://sql-academy.org/en/guide>
+- <https://www.codecademy.com/learn/learn-sql>
 - <https://bookdown.org/paranedagarcia/database/sql.html>
 - <https://gestionbasesdatos.readthedocs.io/es/latest/index.html>
+
+### SQL - Online
+
+- <https://www.db-fiddle.com/>
+- <https://sqlfiddle.com/>
+- <https://sandboxsql.com>
+
+### SQL - SGDB - MySQL
+
+- <https://dev.mysql.com/doc/>
+- <https://dev.mysql.com/doc/refman/9.1/en/>
+- <https://cheatsheets.zip/mysql>
+
+### SQL - SGDB - PostgreSQL
+
+- <https://www.postgresql.org/docs/>
+- <https://wiki.postgresql.org/>
+- <https://cheatsheets.zip/postgres>
+- <https://www.pgadmin.org/>
+
+### SQL - SGDB - Microsoft SQL
+
+- <https://learn.microsoft.com/es-es/sql>
+- <https://mcr.microsoft.com/>
+
+### SQL - SGDB - Oracle SQL
+
+- <https://docs.oracle.com/en/database/oracle/oracle-database/index.html>
+- <https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/>
+- <https://container-registry.oracle.com/>
+- <https://hub.docker.com/r/gvenzl/oracle-xe>
+- <https://hub.docker.com/r/gvenzl/oracle-free>
 - <https://livesql.oracle.com/>
 
 ## Licencia

@@ -2641,7 +2641,7 @@ docker stop postgres-container
 - [Flyway - Version control for your database](https://flywaydb.org/)
 - [HikariCP・A solid, high-performance, JDBC connection pool at last](https://github.com/brettwooldridge/HikariCP)
 
-### SQL - Learn
+### SQL - Learning
 
 - <https://www.w3schools.com/sql/default.asp>
 - <https://www.sqltutorial.org/>
